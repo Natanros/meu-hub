@@ -64,7 +64,9 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
         
         for (let i = 0; i < installments; i++) {
           const installmentDate = new Date(baseDate)
-          installmentDate.setMonth(installmentDate.getMonth() + i)
+          // Primeira parcela no próximo mês, demais nos meses seguintes
+          installmentDate.setMonth(installmentDate.getMonth() + i + 1)
+          installmentDate.setDate(1) // Primeiro dia do mês
           
           const description = `${formData.description || formData.category} (${i + 1}/${installments})`
           

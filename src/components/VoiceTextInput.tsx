@@ -107,7 +107,9 @@ export function VoiceTextInput({ onTransactionAdded, metas, showToast }: VoiceTe
             // Criar uma transação para cada parcela
             for (let i = 0; i < installments; i++) {
               const installmentDate = new Date(today);
-              installmentDate.setMonth(installmentDate.getMonth() + i); // cada parcela no mês seguinte
+              // Primeira parcela no próximo mês, demais nos meses seguintes
+              installmentDate.setMonth(installmentDate.getMonth() + i + 1);
+              installmentDate.setDate(1); // Primeiro dia do mês
               
               const installmentTransaction = {
                 ...result.transaction,
