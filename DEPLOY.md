@@ -230,3 +230,39 @@ Seu PWA está online em: `https://seu-projeto.vercel.app`
 4. 🔄 **Configurar domínio** customizado (opcional)
 
 **Parabéns! Seu hub pessoal está no ar! 🚀**
+
+## 🔧 **ERRO: Environment Variable References Secret**
+
+Se você recebeu o erro `Environment Variable "DATABASE_URL" references Secret "database_url", which does not exist`, siga estes passos:
+
+### **Solução Via Dashboard (Recomendado):**
+
+1. **Acesse [Vercel Dashboard](https://vercel.com/dashboard)**
+2. **Selecione seu projeto**
+3. **Vá em Settings > Environment Variables**
+4. **Clique em "Add New"**
+5. **Adicione:**
+   ```
+   Name: DATABASE_URL
+   Value: postgresql://username:password@host:5432/database
+   Environments: Production, Preview, Development
+   ```
+6. **Adicione também (opcional):**
+   ```
+   Name: OPENAI_API_KEY
+   Value: sk-sua_chave_aqui
+   Environments: Production, Preview, Development
+   ```
+7. **Vá em Deployments > Redeploy**
+
+### **Solução Via CLI:**
+
+```bash
+vercel env add DATABASE_URL
+# Cole sua URL PostgreSQL quando solicitado
+
+vercel env add OPENAI_API_KEY
+# Cole sua chave OpenAI quando solicitado
+
+vercel --prod
+```
