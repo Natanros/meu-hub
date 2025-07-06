@@ -129,7 +129,7 @@ export function VoiceTextInput({ onTransactionAdded, metas, showToast }: VoiceTe
             }
             
             if (successCount === installments) {
-              showToast(`✨ ${installments} parcelas criadas: ${installments}x de R$ ${result.transaction.amount.toFixed(2)} (Total: R$ ${result.totalAmount.toFixed(2)})${result.source === 'fallback_local' ? ' 🤖 Local' : ''}`, 'success');
+              showToast(`✨ ${installments} parcelas criadas: ${installments}x de R$ ${result.transaction.amount.toFixed(2)} (Total: R$ ${result.totalAmount.toFixed(2)})`, 'success');
             } else {
               showToast(`⚠️ Apenas ${successCount}/${installments} parcelas foram criadas`, 'error');
             }
@@ -152,10 +152,6 @@ export function VoiceTextInput({ onTransactionAdded, metas, showToast }: VoiceTe
           }
 
           let successMessage = `✨ Transação criada: ${result.transaction.type === 'income' ? 'Receita' : 'Despesa'} de R$ ${result.transaction.amount.toFixed(2)}`
-          
-          if (result.source === 'fallback_local') {
-            successMessage += ' 🤖 (Local)'
-          }
           
           if (result.message) {
             successMessage += ` • ${result.message}`

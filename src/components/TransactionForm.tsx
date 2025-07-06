@@ -25,7 +25,8 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
     amount: '',
     description: '',
     date: new Date().toISOString().split('T')[0],
-    metaId: ''
+    metaId: '',
+    installments: '1'
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -52,26 +53,72 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('/api/transactions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          type: formData.type,
-          category: formData.category,
-          amount: parseFloat(formData.amount),
-          description: formData.description || null,
-          date: new Date(formData.date).toISOString(),
-          metaId: formData.metaId || null
-        }),
-      })
+      const installments = parseInt(formData.installments) || 1
+      const totalAmount = parseFloat(formData.amount)
+      const installmentAmount = installments > 1 ? totalAmount / installments : totalAmount
 
-      if (!response.ok) {
-        throw new Error('Erro ao salvar transação')
+      if (installments > 1) {
+        // Criar múltiplas transações para parcelas
+        const promises = []
+        const baseDate = new Date(formData.date)
+        
+        for (let i = 0; i < installments; i++) {
+          const installmentDate = new Date(baseDate)
+          installmentDate.setMonth(installmentDate.getMonth() + i)
+          
+          const description = `${formData.description || formData.category} (${i + 1}/${installments})`
+          
+          promises.push(
+            fetch('/api/transactions', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                type: formData.type,
+                category: formData.category,
+                amount: installmentAmount,
+                description,
+                date: installmentDate.toISOString(),
+                metaId: formData.metaId || null,
+                installments: installments,
+                recurrence: 'monthly'
+              }),
+            })
+          )
+        }
+        
+        const responses = await Promise.all(promises)
+        const failedResponses = responses.filter(r => !r.ok)
+        
+        if (failedResponses.length > 0) {
+          throw new Error(`Erro ao salvar ${failedResponses.length} parcela(s)`)
+        }
+        
+        showToast(`✨ ${installments} parcelas criadas: ${installments}x de R$ ${installmentAmount.toFixed(2)}`, 'success')
+      } else {
+        // Transação única
+        const response = await fetch('/api/transactions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: formData.type,
+            category: formData.category,
+            amount: totalAmount,
+            description: formData.description || null,
+            date: new Date(formData.date).toISOString(),
+            metaId: formData.metaId || null
+          }),
+        })
+
+        if (!response.ok) {
+          throw new Error('Erro ao salvar transação')
+        }
+        
+        showToast('Transação adicionada com sucesso!', 'success')
       }
-
-      showToast('Transação adicionada com sucesso!', 'success')
       
       // Reset form
       setFormData({
@@ -80,7 +127,8 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
         amount: '',
         description: '',
         date: new Date().toISOString().split('T')[0],
-        metaId: ''
+        metaId: '',
+        installments: '1'
       })
 
       onTransactionAdded()
@@ -152,8 +200,8 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
             </div>
           </div>
 
-          {/* Valor e Data */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Valor, Parcelas e Data */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
                 Valor (R$) *
@@ -167,6 +215,32 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
                 onChange={(e) => handleInputChange('amount', e.target.value)}
                 className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                Parcelas
+              </label>
+              <Select value={formData.installments} onValueChange={(value) => handleInputChange('installments', value)}>
+                <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                  <SelectValue placeholder="1x" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1x (À vista)</SelectItem>
+                  <SelectItem value="2">2x</SelectItem>
+                  <SelectItem value="3">3x</SelectItem>
+                  <SelectItem value="4">4x</SelectItem>
+                  <SelectItem value="5">5x</SelectItem>
+                  <SelectItem value="6">6x</SelectItem>
+                  <SelectItem value="12">12x</SelectItem>
+                  <SelectItem value="24">24x</SelectItem>
+                </SelectContent>
+              </Select>
+              {parseInt(formData.installments) > 1 && formData.amount && (
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  💰 {formData.installments}x de R$ {(parseFloat(formData.amount) / parseInt(formData.installments)).toFixed(2)}
+                </p>
+              )}
             </div>
 
             <div>
@@ -258,7 +332,8 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
                 amount: '',
                 description: '',
                 date: new Date().toISOString().split('T')[0],
-                metaId: ''
+                metaId: '',
+                installments: '1'
               })}
               className="dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600"
             >

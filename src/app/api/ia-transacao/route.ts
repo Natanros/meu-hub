@@ -32,36 +32,45 @@ function detectInstallments(text: string): InstallmentData {
     /parcelad[oa]\s+(?:em\s+)?(\d+)/i, // "parcelado em 3"
     /dividid[oa]\s+(?:em\s+)?(\d+)/i, // "dividido em 4"
     /(\d+)\s*(?:x|vezes)\s+(?:de|sem\s+juros)/i, // "3x de", "2 vezes sem juros"
-    /(?:duas|duas)\s+vezes/i, // "duas vezes" = 2 parcelas
-    /(?:três|tres)\s+vezes/i, // "três vezes" = 3 parcelas
-    /(?:quatro)\s+vezes/i, // "quatro vezes" = 4 parcelas
-    /(?:cinco)\s+vezes/i, // "cinco vezes" = 5 parcelas
+    /em\s+(duas|dois)\s+vezes/i, // "em duas vezes" = 2 parcelas
+    /em\s+(três|tres)\s+vezes/i, // "em três vezes" = 3 parcelas
+    /em\s+(quatro)\s+vezes/i, // "em quatro vezes" = 4 parcelas
+    /em\s+(cinco)\s+vezes/i, // "em cinco vezes" = 5 parcelas
+    /(duas|dois)\s+vezes/i, // "duas vezes" = 2 parcelas
+    /(três|tres)\s+vezes/i, // "três vezes" = 3 parcelas
+    /(quatro)\s+vezes/i, // "quatro vezes" = 4 parcelas
+    /(cinco)\s+vezes/i, // "cinco vezes" = 5 parcelas
     /(\d+)\s*(?:vez|vezes)(?:\s+de)?/i, // "2 vezes de", "3 vez"
     /em\s+(\d+)\s*(?:parte|partes)/i, // "em 2 partes"
   ];
 
   // Mapeamento de números por extenso
   const numberWords: Record<string, number> = {
-    'duas': 2, 'dois': 2,
-    'três': 3, 'tres': 3,
-    'quatro': 4,
-    'cinco': 5,
-    'seis': 6,
-    'sete': 7,
-    'oito': 8,
-    'nove': 9,
-    'dez': 10
+    duas: 2,
+    dois: 2,
+    três: 3,
+    tres: 3,
+    quatro: 4,
+    cinco: 5,
+    seis: 6,
+    sete: 7,
+    oito: 8,
+    nove: 9,
+    dez: 10,
   };
 
   for (const pattern of installmentPatterns) {
     const match = textLower.match(pattern);
     if (match) {
       let installments = 0;
-      
+
       if (match[1] && !isNaN(parseInt(match[1]))) {
         installments = parseInt(match[1]);
+      } else if (match[1] && numberWords[match[1]]) {
+        // Capturar números por extenso do match
+        installments = numberWords[match[1]];
       } else {
-        // Verificar números por extenso
+        // Verificar números por extenso no texto inteiro
         for (const [word, num] of Object.entries(numberWords)) {
           if (textLower.includes(word)) {
             installments = num;
@@ -69,8 +78,9 @@ function detectInstallments(text: string): InstallmentData {
           }
         }
       }
-      
+
       if (installments > 1 && installments <= 100) {
+        console.log(`🔍 Parcelas detectadas: ${installments} para texto: "${text}"`);
         return { installments };
       }
     }
