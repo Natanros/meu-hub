@@ -102,12 +102,17 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ transactions }) => {
     }
 
     // Filtrar transações por período
-    const startDate = new Date(dateRange.start);
-    const endDate = new Date(dateRange.end + 'T23:59:59');
+    const startDate = new Date(dateRange.start + 'T00:00:00');
+    const endDate = new Date(dateRange.end + 'T23:59:59.999');
     
     const transacoesPeriodo = transactions.filter(t => {
       const transactionDate = new Date(t.date);
-      return transactionDate >= startDate && transactionDate <= endDate;
+      // Normalizar datas para comparação (remover horário)
+      const txDateOnly = new Date(transactionDate.getFullYear(), transactionDate.getMonth(), transactionDate.getDate());
+      const startDateOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+      const endDateOnly = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+      
+      return txDateOnly >= startDateOnly && txDateOnly <= endDateOnly;
     });
 
     // Calcular totais

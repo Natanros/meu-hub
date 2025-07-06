@@ -81,9 +81,14 @@ const UpcomingPaymentsDashboard: React.FC<UpcomingPaymentsDashboardProps> = ({ t
     // Filtrar transações do período (apenas despesas)
     const payments = transactions.filter(t => {
       const transactionDate = new Date(t.date);
+      // Normalizar datas para comparação (apenas data, sem horário)
+      const txDateOnly = new Date(transactionDate.getFullYear(), transactionDate.getMonth(), transactionDate.getDate());
+      const startDateOnly = new Date(period.start.getFullYear(), period.start.getMonth(), period.start.getDate());
+      const endDateOnly = new Date(period.end.getFullYear(), period.end.getMonth(), period.end.getDate());
+      
       return t.type === 'expense' && 
-             transactionDate >= period.start && 
-             transactionDate <= period.end;
+             txDateOnly >= startDateOnly && 
+             txDateOnly <= endDateOnly;
     }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
     // Calcular total

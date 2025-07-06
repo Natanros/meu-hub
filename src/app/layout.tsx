@@ -42,9 +42,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="apple-touch-startup-image" href="/icons/icon-512x512.svg" />
         <meta name="apple-touch-fullscreen" content="yes" />
       </head>
-      <body>
+      <body className="overflow-x-hidden max-w-full">
         <ThemeProvider>
-          <ResponsiveLayout>{children}</ResponsiveLayout>
+          <div className="main-container min-h-screen w-full overflow-x-hidden">
+            <ResponsiveLayout>{children}</ResponsiveLayout>
+          </div>
           <PWAInstallManager />
         </ThemeProvider>
       </body>

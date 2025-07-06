@@ -32,14 +32,45 @@ function detectInstallments(text: string): InstallmentData {
     /parcelad[oa]\s+(?:em\s+)?(\d+)/i, // "parcelado em 3"
     /dividid[oa]\s+(?:em\s+)?(\d+)/i, // "dividido em 4"
     /(\d+)\s*(?:x|vezes)\s+(?:de|sem\s+juros)/i, // "3x de", "2 vezes sem juros"
+    /(?:duas|duas)\s+vezes/i, // "duas vezes" = 2 parcelas
+    /(?:três|tres)\s+vezes/i, // "três vezes" = 3 parcelas
+    /(?:quatro)\s+vezes/i, // "quatro vezes" = 4 parcelas
+    /(?:cinco)\s+vezes/i, // "cinco vezes" = 5 parcelas
+    /(\d+)\s*(?:vez|vezes)(?:\s+de)?/i, // "2 vezes de", "3 vez"
+    /em\s+(\d+)\s*(?:parte|partes)/i, // "em 2 partes"
   ];
+
+  // Mapeamento de números por extenso
+  const numberWords: Record<string, number> = {
+    'duas': 2, 'dois': 2,
+    'três': 3, 'tres': 3,
+    'quatro': 4,
+    'cinco': 5,
+    'seis': 6,
+    'sete': 7,
+    'oito': 8,
+    'nove': 9,
+    'dez': 10
+  };
 
   for (const pattern of installmentPatterns) {
     const match = textLower.match(pattern);
-    if (match && match[1]) {
-      const installments = parseInt(match[1]);
+    if (match) {
+      let installments = 0;
+      
+      if (match[1] && !isNaN(parseInt(match[1]))) {
+        installments = parseInt(match[1]);
+      } else {
+        // Verificar números por extenso
+        for (const [word, num] of Object.entries(numberWords)) {
+          if (textLower.includes(word)) {
+            installments = num;
+            break;
+          }
+        }
+      }
+      
       if (installments > 1 && installments <= 100) {
-        // limite razoável
         return { installments };
       }
     }
@@ -512,9 +543,9 @@ Se não conseguir extrair informações suficientes, responda:
 
     try {
       if (!openai) {
-        throw new Error('OpenAI API key not configured');
+        throw new Error("OpenAI API key not configured");
       }
-      
+
       const completion = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
