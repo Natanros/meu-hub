@@ -80,7 +80,9 @@ function detectInstallments(text: string): InstallmentData {
       }
 
       if (installments > 1 && installments <= 100) {
-        console.log(`🔍 Parcelas detectadas: ${installments} para texto: "${text}"`);
+        console.log(
+          `🔍 Parcelas detectadas: ${installments} para texto: "${text}"`
+        );
         return { installments };
       }
     }
@@ -454,9 +456,8 @@ function fallbackLocalProcessing(text: string, metas: Meta[] = []) {
         ...baseTransaction,
         amount: installmentAmount, // valor por parcela
         installments: installmentData.installments,
-        description: `${description} (${
-          installmentData.installments
-        }x de R$ ${installmentAmount.toFixed(2)})`,
+        recurrence: 'monthly',
+        description: `${description}`, // Sem modificar a descrição aqui, será feito no frontend
       },
       confidence: 0.8,
       source: "fallback_local",
@@ -520,11 +521,12 @@ ${metasContext}
 
 REGRAS IMPORTANTES:
 1. Determine se é uma RECEITA (income) ou DESPESA (expense)
-2. Extraia o valor numérico (apenas números, sem R$ ou símbolos)
+2. Extraia o valor numérico total (não o valor por parcela)
 3. Identifique a categoria mais apropriada
-4. Se uma meta for mencionada e existir na lista, use o ID da meta
-5. Use a data atual se não especificada
-6. Seja preciso na interpretação
+4. Detecte se há parcelamento (ex: "em 3x", "duas vezes", "parcelado em 4")
+5. Se uma meta for mencionada e existir na lista, use o ID da meta
+6. Use a data atual se não especificada
+7. Seja preciso na interpretação
 
 CATEGORIAS VÁLIDAS:
 Para DESPESAS: alimentacao, transporte, saude, educacao, lazer, casa, vestuario, outros
@@ -535,13 +537,16 @@ Responda APENAS com um JSON válido no seguinte formato:
   "success": true,
   "transaction": {
     "type": "income" ou "expense",
-    "amount": número,
+    "amount": número_total_da_transacao,
     "description": "descrição clara",
     "category": "categoria",
     "date": "YYYY-MM-DD",
-    "metaId": "id_da_meta_se_aplicavel_ou_null"
+    "metaId": "id_da_meta_se_aplicavel_ou_null",
+    "installments": número_de_parcelas_se_detectado_ou_1
   },
-  "confidence": número_entre_0_e_1
+  "confidence": número_entre_0_e_1,
+  "isInstallment": true_se_mais_de_1_parcela_false_se_nao,
+  "needsMultipleTransactions": true_se_mais_de_1_parcela_false_se_nao
 }
 
 Se não conseguir extrair informações suficientes, responda:
@@ -590,7 +595,7 @@ Se não conseguir extrair informações suficientes, responda:
 
         // Validar estrutura da resposta
         if (result.success && result.transaction) {
-          const { type, amount, description, category, date } =
+          const { type, amount, description, category, date, installments } =
             result.transaction;
 
           if (!type || !amount || !description || !category || !date) {
@@ -622,9 +627,35 @@ Se não conseguir extrair informações suficientes, responda:
               { status: 400 }
             );
           }
+
+          // Verificar se há parcelas detectadas pela OpenAI
+          const hasInstallments = installments && installments > 1;
+          
+          if (hasInstallments) {
+            // Se há parcelas, ajustar a resposta
+            const installmentAmount = amount / installments;
+            
+            return NextResponse.json({
+              ...result,
+              transaction: {
+                ...result.transaction,
+                amount: installmentAmount, // valor por parcela
+                installments: installments,
+                recurrence: 'monthly'
+              },
+              isInstallment: true,
+              needsMultipleTransactions: true,
+              totalAmount: amount,
+              source: "openai_with_installments",
+              message: `Transação parcelada detectada: ${installments}x de R$ ${installmentAmount.toFixed(2)}`
+            });
+          }
         }
 
-        return NextResponse.json(result);
+        return NextResponse.json({
+          ...result,
+          source: "openai"
+        });
       } catch (parseError) {
         console.error("Erro ao fazer parse da resposta da IA:", parseError);
         console.log("🔄 Erro no parse da OpenAI, usando fallback local...");

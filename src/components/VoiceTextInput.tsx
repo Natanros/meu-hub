@@ -113,7 +113,13 @@ export function VoiceTextInput({ onTransactionAdded, metas, showToast }: VoiceTe
                 ...result.transaction,
                 description: `${result.transaction.description} - Parcela ${i + 1}/${installments}`,
                 date: installmentDate.toISOString().split('T')[0],
+                installments: installments,
+                recurrence: 'monthly'
               };
+              
+              // Remove campos desnecessários para evitar conflitos
+              delete installmentTransaction.needsMultipleTransactions;
+              delete installmentTransaction.isInstallment;
               
               const transactionResponse = await fetch('/api/transactions', {
                 method: 'POST',
@@ -125,6 +131,8 @@ export function VoiceTextInput({ onTransactionAdded, metas, showToast }: VoiceTe
 
               if (transactionResponse.ok) {
                 successCount++;
+              } else {
+                console.error(`Erro ao criar parcela ${i + 1}:`, await transactionResponse.text());
               }
             }
             
