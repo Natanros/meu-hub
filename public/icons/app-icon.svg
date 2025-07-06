@@ -1,0 +1,42 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="120" fill="url(#bgGradient)"/>
+  
+  <!-- Main Icon -->
+  <g transform="translate(256, 256)">
+    <!-- Dollar Sign -->
+    <circle cx="0" cy="0" r="150" fill="white" opacity="0.1"/>
+    <circle cx="0" cy="0" r="120" fill="white" opacity="0.2"/>
+    
+    <!-- Money Symbol -->
+    <path d="M-40,-80 L40,-80 A40,40 0 0,1 40,0 A40,40 0 0,1 0,40 L-40,40 A40,40 0 0,0 -40,80 L40,80" 
+          stroke="white" stroke-width="12" fill="none" stroke-linecap="round"/>
+    <line x1="0" y1="-100" x2="0" y2="-60" stroke="white" stroke-width="12" stroke-linecap="round"/>
+    <line x1="0" y1="60" x2="0" y2="100" stroke="white" stroke-width="12" stroke-linecap="round"/>
+    
+    <!-- Chart Lines -->
+    <g transform="translate(60, 60)" opacity="0.8">
+      <line x1="0" y1="0" x2="30" y2="-20" stroke="white" stroke-width="6" stroke-linecap="round"/>
+      <line x1="30" y1="-20" x2="50" y2="10" stroke="white" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="0" cy="0" r="4" fill="white"/>
+      <circle cx="30" cy="-20" r="4" fill="white"/>
+      <circle cx="50" cy="10" r="4" fill="white"/>
+    </g>
+    
+    <!-- AI Spark -->
+    <g transform="translate(-80, -60)" opacity="0.9">
+      <path d="M0,-10 L5,0 L0,10 L-5,0 Z" fill="white"/>
+      <path d="M-10,0 L0,5 L10,0 L0,-5 Z" fill="white"/>
+    </g>
+  </g>
+  
+  <!-- Bottom accent -->
+  <rect x="0" y="400" width="512" height="112" rx="0" fill="white" opacity="0.1"/>
+</svg>

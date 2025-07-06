@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Transaction {
+  id              Int      @id @default(autoincrement())
+  type            String // 'income' ou 'expense'
+  category        String
+  amount          Float
+  description     String?
+  date            DateTime
+  metaId          String?
+  meta            Meta?    @relation(fields: [metaId], references: [id])
+  installments    Int? // <-- NOVO: número de parcelas
+  recurrence      String? // <-- NOVO: tipo de recorrência ('none', 'monthly', 'weekly')
+  recurrenceCount Int? // <-- NOVO: quantidade de repetições
+}
+
+model Meta {
+  id           String        @id @default(uuid())
+  nome         String
+  valor        Float
+  transactions Transaction[]
+}

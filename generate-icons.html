@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Gerador de Ícones PWA</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      canvas {
+        border: 1px solid #ccc;
+        margin: 10px;
+      }
+      .icon-group {
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🎨 Gerador de Ícones PWA - Meu Hub Pessoal</h1>
+    <p>Clique nos botões para baixar os ícones:</p>
+
+    <div class="icon-group">
+      <h3>Ícones do App:</h3>
+      <canvas id="icon72" width="72" height="72"></canvas>
+      <button onclick="downloadIcon('icon72', 'icon-72x72.png')">
+        Baixar 72x72</button
+      ><br />
+
+      <canvas id="icon152" width="152" height="152"></canvas>
+      <button onclick="downloadIcon('icon152', 'icon-152x152.png')">
+        Baixar 152x152</button
+      ><br />
+
+      <canvas id="icon192" width="192" height="192"></canvas>
+      <button onclick="downloadIcon('icon192', 'icon-192x192.png')">
+        Baixar 192x192</button
+      ><br />
+
+      <canvas id="icon512" width="512" height="512"></canvas>
+      <button onclick="downloadIcon('icon512', 'icon-512x512.png')">
+        Baixar 512x512</button
+      ><br />
+    </div>
+
+    <div class="icon-group">
+      <h3>Ícones de Atalhos:</h3>
+      <canvas id="shortcutAdd" width="96" height="96"></canvas>
+      <button onclick="downloadIcon('shortcutAdd', 'shortcut-add.png')">
+        Baixar Add</button
+      ><br />
+
+      <canvas id="shortcutReport" width="96" height="96"></canvas>
+      <button onclick="downloadIcon('shortcutReport', 'shortcut-report.png')">
+        Baixar Report</button
+      ><br />
+    </div>
+
+    <script>
+      function drawIcon(canvasId, size, iconType = "main") {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext("2d");
+
+        // Fundo com gradiente
+        const gradient = ctx.createLinearGradient(0, 0, size, size);
+        gradient.addColorStop(0, "#3b82f6"); // Azul do tema
+        gradient.addColorStop(1, "#1d4ed8"); // Azul mais escuro
+
+        // Desenhar fundo
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, size, size);
+
+        // Adicionar borda arredondada (simulada)
+        ctx.globalCompositeOperation = "destination-in";
+        ctx.beginPath();
+        const radius = size * 0.18; // 18% do tamanho para bordas iOS-style
+        ctx.roundRect(0, 0, size, size, radius);
+        ctx.fill();
+        ctx.globalCompositeOperation = "source-over";
+
+        // Desenhar ícone principal
+        ctx.fillStyle = "white";
+        ctx.font = `bold ${size * 0.35}px Arial`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        if (iconType === "main") {
+          // Ícone principal: "💰" ou símbolo financeiro
+          ctx.fillText("💰", size / 2, size / 2);
+        } else if (iconType === "add") {
+          // Ícone de adicionar: "+"
+          ctx.font = `bold ${size * 0.5}px Arial`;
+          ctx.fillText("+", size / 2, size / 2);
+        } else if (iconType === "report") {
+          // Ícone de relatório: "📊"
+          ctx.fillText("📊", size / 2, size / 2);
+        }
+
+        // Adicionar brilho sutil
+        const glowGradient = ctx.createRadialGradient(
+          size / 2,
+          size / 4,
+          0,
+          size / 2,
+          size / 2,
+          size / 2
+        );
+        glowGradient.addColorStop(0, "rgba(255,255,255,0.3)");
+        glowGradient.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = glowGradient;
+        ctx.fillRect(0, 0, size, size);
+      }
+
+      function downloadIcon(canvasId, filename) {
+        const canvas = document.getElementById(canvasId);
+        const link = document.createElement("a");
+        link.download = filename;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      }
+
+      // Gerar todos os ícones ao carregar a página
+      window.onload = function () {
+        drawIcon("icon72", 72);
+        drawIcon("icon152", 152);
+        drawIcon("icon192", 192);
+        drawIcon("icon512", 512);
+        drawIcon("shortcutAdd", 96, "add");
+        drawIcon("shortcutReport", 96, "report");
+      };
+
+      // Polyfill para roundRect se necessário
+      if (!CanvasRenderingContext2D.prototype.roundRect) {
+        CanvasRenderingContext2D.prototype.roundRect = function (
+          x,
+          y,
+          width,
+          height,
+          radius
+        ) {
+          this.beginPath();
+          this.moveTo(x + radius, y);
+          this.lineTo(x + width - radius, y);
+          this.quadraticCurveTo(x + width, y, x + width, y + radius);
+          this.lineTo(x + width, y + height - radius);
+          this.quadraticCurveTo(
+            x + width,
+            y + height,
+            x + width - radius,
+            y + height
+          );
+          this.lineTo(x + radius, y + height);
+          this.quadraticCurveTo(x, y + height, x, y + height - radius);
+          this.lineTo(x, y + radius);
+          this.quadraticCurveTo(x, y, x + radius, y);
+          this.closePath();
+        };
+      }
+    </script>
+  </body>
+</html>

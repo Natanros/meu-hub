@@ -1,0 +1,89 @@
+{
+  "name": "Meu Hub Pessoal",
+  "short_name": "Hub Pessoal",
+  "description": "Sistema completo de gestão financeira pessoal com IA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1f2937",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["finance", "productivity", "utilities"],
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.svg",
+      "sizes": "72x72",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-152x152.svg",
+      "sizes": "152x152",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192x192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Adicionar Transação",
+      "short_name": "Nova Transação",
+      "description": "Adicionar receita ou despesa rapidamente",
+      "url": "/financeiro?action=new",
+      "icons": [
+        {
+          "src": "/icons/shortcut-add.svg",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Ver Relatórios",
+      "short_name": "Relatórios",
+      "description": "Visualizar análises e relatórios",
+      "url": "/analytics",
+      "icons": [
+        {
+          "src": "/icons/shortcut-report.svg",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Chat IA",
+      "short_name": "IA",
+      "description": "Conversar com a IA financeira",
+      "url": "/ia",
+      "icons": [
+        {
+          "src": "/icons/shortcut-ai.svg",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "features": [
+    "offline",
+    "push-notifications",
+    "voice-input",
+    "camera",
+    "microphone"
+  ]
+}
