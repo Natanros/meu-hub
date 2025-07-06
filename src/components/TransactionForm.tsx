@@ -234,8 +234,12 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
                   <SelectItem value="4">4x</SelectItem>
                   <SelectItem value="5">5x</SelectItem>
                   <SelectItem value="6">6x</SelectItem>
+                  <SelectItem value="7">7x</SelectItem>
+                  <SelectItem value="8">8x</SelectItem>
+                  <SelectItem value="9">9x</SelectItem>
+                  <SelectItem value="10">10x</SelectItem>
+                  <SelectItem value="11">11x</SelectItem>
                   <SelectItem value="12">12x</SelectItem>
-                  <SelectItem value="24">24x</SelectItem>
                 </SelectContent>
               </Select>
               {parseInt(formData.installments) > 1 && formData.amount && (

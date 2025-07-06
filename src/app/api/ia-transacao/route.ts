@@ -32,19 +32,14 @@ function detectInstallments(text: string): InstallmentData {
     /parcelad[oa]\s+(?:em\s+)?(\d+)/i, // "parcelado em 3"
     /dividid[oa]\s+(?:em\s+)?(\d+)/i, // "dividido em 4"
     /(\d+)\s*(?:x|vezes)\s+(?:de|sem\s+juros)/i, // "3x de", "2 vezes sem juros"
-    /em\s+(duas|dois)\s+vezes/i, // "em duas vezes" = 2 parcelas
-    /em\s+(três|tres)\s+vezes/i, // "em três vezes" = 3 parcelas
-    /em\s+(quatro)\s+vezes/i, // "em quatro vezes" = 4 parcelas
-    /em\s+(cinco)\s+vezes/i, // "em cinco vezes" = 5 parcelas
-    /(duas|dois)\s+vezes/i, // "duas vezes" = 2 parcelas
-    /(três|tres)\s+vezes/i, // "três vezes" = 3 parcelas
-    /(quatro)\s+vezes/i, // "quatro vezes" = 4 parcelas
-    /(cinco)\s+vezes/i, // "cinco vezes" = 5 parcelas
+    /em\s+(duas|dois|três|tres|quatro|cinco|seis|sete|oito|nove|dez|onze|doze)\s+(?:vezes|parcelas?)/i, // "em duas vezes" até "em doze parcelas"
+    /(duas|dois|três|tres|quatro|cinco|seis|sete|oito|nove|dez|onze|doze)\s+(?:vezes|parcelas?)/i, // "duas vezes" até "doze parcelas"
     /(\d+)\s*(?:vez|vezes)(?:\s+de)?/i, // "2 vezes de", "3 vez"
     /em\s+(\d+)\s*(?:parte|partes)/i, // "em 2 partes"
+    /(\d+)\s*(?:x)/i, // "2x", "3x" (padrão mais simples)
   ];
 
-  // Mapeamento de números por extenso
+  // Mapeamento de números por extenso (até 12)
   const numberWords: Record<string, number> = {
     duas: 2,
     dois: 2,
@@ -57,6 +52,8 @@ function detectInstallments(text: string): InstallmentData {
     oito: 8,
     nove: 9,
     dez: 10,
+    onze: 11,
+    doze: 12,
   };
 
   for (const pattern of installmentPatterns) {
@@ -79,7 +76,7 @@ function detectInstallments(text: string): InstallmentData {
         }
       }
 
-      if (installments > 1 && installments <= 100) {
+      if (installments > 1 && installments <= 12) {
         console.log(
           `🔍 Parcelas detectadas: ${installments} para texto: "${text}"`
         );
@@ -456,7 +453,7 @@ function fallbackLocalProcessing(text: string, metas: Meta[] = []) {
         ...baseTransaction,
         amount: installmentAmount, // valor por parcela
         installments: installmentData.installments,
-        recurrence: 'monthly',
+        recurrence: "monthly",
         description: `${description}`, // Sem modificar a descrição aqui, será feito no frontend
       },
       confidence: 0.8,
@@ -630,31 +627,33 @@ Se não conseguir extrair informações suficientes, responda:
 
           // Verificar se há parcelas detectadas pela OpenAI
           const hasInstallments = installments && installments > 1;
-          
+
           if (hasInstallments) {
             // Se há parcelas, ajustar a resposta
             const installmentAmount = amount / installments;
-            
+
             return NextResponse.json({
               ...result,
               transaction: {
                 ...result.transaction,
                 amount: installmentAmount, // valor por parcela
                 installments: installments,
-                recurrence: 'monthly'
+                recurrence: "monthly",
               },
               isInstallment: true,
               needsMultipleTransactions: true,
               totalAmount: amount,
               source: "openai_with_installments",
-              message: `Transação parcelada detectada: ${installments}x de R$ ${installmentAmount.toFixed(2)}`
+              message: `Transação parcelada detectada: ${installments}x de R$ ${installmentAmount.toFixed(
+                2
+              )}`,
             });
           }
         }
 
         return NextResponse.json({
           ...result,
-          source: "openai"
+          source: "openai",
         });
       } catch (parseError) {
         console.error("Erro ao fazer parse da resposta da IA:", parseError);
