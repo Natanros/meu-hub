@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Transaction } from '@/types/transaction'
 import { ExportManager, ExportData } from '@/lib/exportManager'
+import { getCurrentDateLocal } from '@/lib/dateUtils'
 
 interface Meta {
   id: string
@@ -100,7 +101,7 @@ export function ExportControls({ transactions, metas, onExportComplete }: Export
     
     try {
       const exportData = generateExportData()
-      const exportFilename = filename || `relatorio-${exportType}-${new Date().toISOString().split('T')[0]}`
+      const exportFilename = filename || `relatorio-${exportType}-${getCurrentDateLocal()}`
 
       switch (exportType) {
         case 'csv':
@@ -126,7 +127,7 @@ export function ExportControls({ transactions, metas, onExportComplete }: Export
   const handleServerExport = async () => {
     setIsExporting(true)
     try {
-  const exportFilename = filename || `relatorio-${exportType}-${new Date().toISOString().split('T')[0]}`
+  const exportFilename = filename || `relatorio-${exportType}-${getCurrentDateLocal()}`
   // Agora o servidor suporta csv | json | txt
   const serverType = exportType
       const params = new URLSearchParams()
@@ -261,7 +262,7 @@ export function ExportControls({ transactions, metas, onExportComplete }: Export
         <div className="space-y-2">
           <label className="text-sm font-medium">Nome do Arquivo (opcional)</label>
           <Input
-            placeholder={`relatorio-${exportType}-${new Date().toISOString().split('T')[0]}`}
+            placeholder={`relatorio-${exportType}-${getCurrentDateLocal()}`}
             value={filename}
             onChange={(e) => setFilename(e.target.value)}
           />

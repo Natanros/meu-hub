@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Transaction } from '@/types/transaction';
 import { Meta } from '@/types/meta';
+import { getCurrentDateLocal } from '@/lib/dateUtils';
 
 interface BackupData {
   timestamp: Date;
@@ -137,7 +138,7 @@ const BackupManager: React.FC<BackupManagerProps> = ({
       
       const link = document.createElement('a');
       link.href = url;
-      link.download = `backup-meu-hub-${new Date().toISOString().split('T')[0]}.json`;
+      link.download = `backup-meu-hub-${getCurrentDateLocal()}.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

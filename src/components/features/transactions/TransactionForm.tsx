@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { addPendingTransaction } from '@/lib/indexedDB'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
+import { getCurrentDateLocal } from '@/lib/dateUtils'
 
 interface Meta {
   id: string
@@ -26,7 +27,7 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
     category: '',
     amount: '',
     description: '',
-    date: new Date().toISOString().split('T')[0],
+    date: getCurrentDateLocal(), // ✅ Usa data local correta
     metaId: '',
     installments: '1'
   })
@@ -132,7 +133,7 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
       category: '',
       amount: '',
       description: '',
-      date: new Date().toISOString().split('T')[0],
+      date: getCurrentDateLocal(), // ✅ Usa data local correta
       metaId: '',
       installments: '1'
     })

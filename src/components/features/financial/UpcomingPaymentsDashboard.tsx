@@ -9,6 +9,7 @@ import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Transaction } from '@/types/transaction';
+import { formatDateLocal } from '@/lib/dateUtils';
 
 interface UpcomingPaymentsDashboardProps {
   transactions: Transaction[];
@@ -115,7 +116,7 @@ const UpcomingPaymentsDashboard: React.FC<UpcomingPaymentsDashboardProps> = ({ t
     // Agrupar por dia
     const byDay: { [key: string]: { total: number; count: number; payments: Transaction[] } } = {};
     payments.forEach(payment => {
-      const dayKey = new Date(payment.date).toISOString().split('T')[0];
+      const dayKey = formatDateLocal(new Date(payment.date));
       if (!byDay[dayKey]) {
         byDay[dayKey] = { total: 0, count: 0, payments: [] };
       }

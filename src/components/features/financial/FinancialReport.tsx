@@ -9,6 +9,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Transaction } from '@/types/transaction';
+import { getCurrentMonthRange, formatDateLocal } from '@/lib/dateUtils';
 
 interface FinancialReportProps {
   transactions: Transaction[];
@@ -46,14 +47,8 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ transactions }) => {
 
   // Configurar datas padrão
   useEffect(() => {
-    const today = new Date();
-    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-
-    setDateRange({
-      start: firstDay.toISOString().split('T')[0],
-      end: lastDay.toISOString().split('T')[0]
-    });
+    const monthRange = getCurrentMonthRange();
+    setDateRange(monthRange);
   }, []);
 
   // Filtros rápidos
@@ -79,8 +74,8 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ transactions }) => {
     }
 
     setDateRange({
-      start: start.toISOString().split('T')[0],
-      end: end.toISOString().split('T')[0]
+      start: formatDateLocal(start),
+      end: formatDateLocal(end)
     });
     setActiveFilter(filter);
   };

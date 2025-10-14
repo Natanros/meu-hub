@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Transaction } from '@/types/transaction';
 import { Meta } from '@/types/meta';
 import { PDFReportGenerator, ReportConfig } from '@/lib/pdfReportGenerator';
+import { formatDateLocal } from '@/lib/dateUtils';
 
 interface ReportsManagerProps {
   transactions: Transaction[];
@@ -234,7 +235,7 @@ const ReportsManager: React.FC<ReportsManagerProps> = ({ transactions, metas }) 
                   </label>
                   <Input
                     type="date"
-                    value={config.periodo.inicio.toISOString().split('T')[0]}
+                    value={formatDateLocal(config.periodo.inicio)}
                     onChange={(e) => setConfig({
                       ...config,
                       periodo: {
@@ -250,7 +251,7 @@ const ReportsManager: React.FC<ReportsManagerProps> = ({ transactions, metas }) 
                   </label>
                   <Input
                     type="date"
-                    value={config.periodo.fim.toISOString().split('T')[0]}
+                    value={formatDateLocal(config.periodo.fim)}
                     onChange={(e) => setConfig({
                       ...config,
                       periodo: {

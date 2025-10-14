@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { getCurrentDateLocal } from '@/lib/dateUtils'
 
 interface VoiceTextInputProps {
   onTransactionAdded: () => void
@@ -103,8 +104,8 @@ export function VoiceTextInput({ onTransactionAdded, metas, showToast }: VoiceTe
           const totalAmount = result.totalAmount;
           const installmentAmount = totalAmount / installments;
           
-          // Usar a data atual para a primeira parcela
-          const baseDate = new Date();
+          // Usar a data atual (local) para a primeira parcela
+          const currentDate = getCurrentDateLocal();
           
           try {
             // Criar transação única com múltiplas parcelas
@@ -113,7 +114,7 @@ export function VoiceTextInput({ onTransactionAdded, metas, showToast }: VoiceTe
               amount: totalAmount, // Valor total
               installments: installments,
               description: result.transaction.description,
-              date: baseDate.toISOString().split('T')[0], // Data atual
+              date: currentDate, // ✅ Data local correta
             };
             
             // Remove campos desnecessários

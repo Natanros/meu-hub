@@ -60,11 +60,21 @@ export function useFinancialData() {
   }, [fetchFinancialData]);
 
   const summary: FinancialSummary = useMemo(() => {
-    const totalReceitas = transactions
+    // Filtrar apenas transações do mês atual
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const currentMonthTransactions = transactions.filter((t) => {
+      const transactionDate = new Date(t.date);
+      return transactionDate >= firstDayOfMonth && transactionDate <= lastDayOfMonth;
+    });
+
+    const totalReceitas = currentMonthTransactions
       .filter((t) => t.type === "income")
       .reduce((acc, t) => acc + t.amount, 0);
 
-    const totalDespesas = transactions
+    const totalDespesas = currentMonthTransactions
       .filter((t) => t.type === "expense")
       .reduce((acc, t) => acc + t.amount, 0);
 
