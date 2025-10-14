@@ -229,44 +229,7 @@
   }
 }
 
-/* Mobile-first optimizations */
-@media (max-width: 768px) {
-  .pwa-mobile-friendly {
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  }
-  
-  /* Hide scrollbars on mobile */
-  ::-webkit-scrollbar {
-    display: none;
-  }
-  
-  /* Better touch targets */
-  button, .btn, [role="button"] {
-    min-height: 44px;
-    min-width: 44px;
-  }
-}
-
-/* iOS PWA specific styles */
-@media (display-mode: standalone) {
-  /* Status bar handling */
-  body {
-    padding-top: env(safe-area-inset-top);
-  }
-  
-  /* Remove default iOS styles */
-  input, textarea, select {
-    -webkit-appearance: none;
-    appearance: none;
-    border-radius: 0;
-  }
-}
-
-/* Prevent zoom on input focus (iOS) */
-input, select, textarea {
-  font-size: 16px;
-}
-
+/* Media query para previnir zoom em inputs no iOS */
 @media (max-width: 767px) {
   input, select, textarea {
     font-size: 16px !important;
@@ -448,29 +411,5 @@ input, select, textarea {
     max-width: 100%;
     overflow-x: hidden;
     word-wrap: break-word;
-  }
-  
-  /* Inputs mais acessíveis no mobile */
-  input, select, textarea {
-    font-size: 16px; /* Previne zoom no iOS */
-    min-height: 44px;
-    padding: 12px 16px;
-  }
-  
-  /* Botões de ação mais visíveis */
-  button {
-    min-height: 48px;
-    padding: 14px 20px;
-    font-size: 16px;
-    font-weight: 500;
-  }
-  
-  /* Melhor espaçamento para toque */
-  .space-y-2 > * + * {
-    margin-top: 12px;
-  }
-  
-  .space-y-4 > * + * {
-    margin-top: 20px;
   }
 }

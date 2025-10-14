@@ -1,28 +1,49 @@
-import { useState } from "react";
+"use client";
 
-export function useToast() {
+import React, { createContext, useContext, useState, ReactNode } from "react";
+
+interface ToastContextType {
+  showToast: (message: string, type?: "success" | "error") => void;
+}
+
+const ToastContext = createContext<ToastContextType | undefined>(undefined);
+
+export function ToastProvider({ children }: { children: ReactNode }) {
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
   } | null>(null);
 
-  function showToast(message: string, type: "success" | "error" = "success") {
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success"
+  ) => {
     setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  }
+    setTimeout(() => {
+      setToast(null);
+    }, 3000);
+  };
 
-  function Toast() {
-    if (!toast) return null;
-    return (
-      <div
-        className={`fixed top-4 right-4 px-4 py-2 rounded shadow-lg z-50 text-white ${
-          toast.type === "success" ? "bg-green-600" : "bg-red-600"
-        }`}
-      >
-        {toast.message}
-      </div>
-    );
-  }
+  return (
+    <ToastContext.Provider value={{ showToast }}>
+      {children}
+      {toast && (
+        <div
+          className={`fixed bottom-5 right-5 z-50 rounded-md px-6 py-3 text-white shadow-lg transition-opacity duration-300 ${
+            toast.type === "success" ? "bg-green-500" : "bg-red-500"
+          } ${toast ? "opacity-100" : "opacity-0"}`}
+        >
+          {toast.message}
+        </div>
+      )}
+    </ToastContext.Provider>
+  );
+}
 
-  return { showToast, Toast };
+export function useToast() {
+  const context = useContext(ToastContext);
+  if (context === undefined) {
+    throw new Error("useToast must be used within a ToastProvider");
+  }
+  return context;
 }

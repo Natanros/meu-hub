@@ -1,13 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { OpenAI } from "openai";
-
-// Inicialização condicional do OpenAI
-let openai: OpenAI | null = null;
-if (process.env.OPENAI_API_KEY) {
-  openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-}
+import { getAuthenticatedUser } from "../../../lib/auth-helper";
 
 // Interface para metas
 interface Meta {
@@ -77,9 +69,6 @@ function detectInstallments(text: string): InstallmentData {
       }
 
       if (installments > 1 && installments <= 12) {
-        console.log(
-          `🔍 Parcelas detectadas: ${installments} para texto: "${text}"`
-        );
         return { installments };
       }
     }
@@ -156,20 +145,16 @@ function extractAmount(text: string): number {
       const installments = parseInt(match[1]);
       const installmentValue = parseFloat(match[2].replace(",", "."));
       if (installments > 0 && installmentValue > 0) {
-        // Se encontrou padrão "X vezes de Y", o total é X * Y
         return installments * installmentValue;
       }
     }
   }
-
-  // Padrões para capturar valores em diferentes formatos (valor total)
   const patterns = [
     /r\$\s*(\d+(?:[,.]?\d+)?)/i, // "R$ 50", "R$100"
     /(\d+(?:[,.]?\d+)?)\s*(?:reais?|r\$|rs)/i, // "50 reais", "100 R$"
     /(\d+(?:[,.]?\d+)?)\s*(?:real|reais)/i, // "100 real"
     /(?:gastei|paguei|recebi|ganhei|custou|comprei|vendi)\s+(?:r\$\s*)?(\d+(?:[,.]?\d+)?)/i, // "gastei R$ 50"
     /(?:valor|preço|preco)\s+(?:de\s+)?(?:r\$\s*)?(\d+(?:[,.]?\d+)?)/i, // "valor de R$ 100"
-    /(\d+(?:[,.]?\d+)?)\s*(?:conto|contos|pau|paus|pratas?|dinheiro)/i, // gírias
     /(\d+(?:[,.]?\d+)?)/i, // qualquer número (último recurso)
   ];
 
@@ -395,7 +380,7 @@ function determineCategory(text: string, type: "income" | "expense"): string {
   return "outros";
 }
 
-// Função de fallback que processa localmente
+// Função de processamento local de IA
 function fallbackLocalProcessing(text: string, metas: Meta[] = []) {
   // 1. Extrair valor
   const amount = extractAmount(text);
@@ -456,8 +441,8 @@ function fallbackLocalProcessing(text: string, metas: Meta[] = []) {
         recurrence: "monthly",
         description: `${description}`, // Sem modificar a descrição aqui, será feito no frontend
       },
-      confidence: 0.8,
-      source: "fallback_local",
+      confidence: 0.9,
+      source: "local_ai",
       isInstallment: true,
       totalAmount: amount,
       needsMultipleTransactions: true,
@@ -471,14 +456,26 @@ function fallbackLocalProcessing(text: string, metas: Meta[] = []) {
   return NextResponse.json({
     success: true,
     transaction: baseTransaction,
-    confidence: 0.8,
-    source: "fallback_local",
+    confidence: 0.9,
+    source: "local_ai",
     ...(metaId && { message: `Associado à meta encontrada` }),
   });
 }
 
 export async function POST(request: NextRequest) {
   try {
+    const user = await getAuthenticatedUser(request);
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Não autorizado",
+        },
+        { status: 401 }
+      );
+    }
+
     const { text, metas } = await request.json();
 
     if (!text) {
@@ -491,194 +488,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Se não há chave da OpenAI, usar fallback direto
-    if (!process.env.OPENAI_API_KEY) {
-      console.log(
-        "🔄 Chave da OpenAI não configurada, usando fallback local..."
-      );
-      return fallbackLocalProcessing(text, metas);
-    }
-
-    // Preparar contexto das metas
-    const metasContext =
-      metas && metas.length > 0
-        ? `\nMetas disponíveis: ${metas
-            .map(
-              (meta: { id: string; nome: string; valor: number }) => meta.nome
-            )
-            .join(", ")}`
-        : "";
-
-    const prompt = `
-Você é um assistente financeiro especializado em extrair informações de transações de texto em português brasileiro.
-
-Analise o seguinte texto e extraia as informações da transação financeira:
-"${text}"
-${metasContext}
-
-REGRAS IMPORTANTES:
-1. Determine se é uma RECEITA (income) ou DESPESA (expense)
-2. Extraia o valor numérico total (não o valor por parcela)
-3. Identifique a categoria mais apropriada
-4. Detecte se há parcelamento (ex: "em 3x", "duas vezes", "parcelado em 4")
-5. Se uma meta for mencionada e existir na lista, use o ID da meta
-6. Use a data atual se não especificada
-7. Seja preciso na interpretação
-
-CATEGORIAS VÁLIDAS:
-Para DESPESAS: alimentacao, transporte, saude, educacao, lazer, casa, vestuario, outros
-Para RECEITAS: salario, freelance, investimentos, vendas, presentes, outros
-
-Responda APENAS com um JSON válido no seguinte formato:
-{
-  "success": true,
-  "transaction": {
-    "type": "income" ou "expense",
-    "amount": número_total_da_transacao,
-    "description": "descrição clara",
-    "category": "categoria",
-    "date": "YYYY-MM-DD",
-    "metaId": "id_da_meta_se_aplicavel_ou_null",
-    "installments": número_de_parcelas_se_detectado_ou_1
-  },
-  "confidence": número_entre_0_e_1,
-  "isInstallment": true_se_mais_de_1_parcela_false_se_nao,
-  "needsMultipleTransactions": true_se_mais_de_1_parcela_false_se_nao
-}
-
-Se não conseguir extrair informações suficientes, responda:
-{
-  "success": false,
-  "message": "Não foi possível interpretar a transação. Tente ser mais específico."
-}
-`;
-
-    try {
-      if (!openai) {
-        throw new Error("OpenAI API key not configured");
-      }
-
-      const completion = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content:
-              "Você é um assistente financeiro especializado em extrair dados de transações de texto em português brasileiro. Responda sempre com JSON válido.",
-          },
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-        temperature: 0.1,
-        max_tokens: 500,
-      });
-
-      const responseText = completion.choices[0].message.content;
-
-      if (!responseText) {
-        return NextResponse.json(
-          {
-            success: false,
-            message: "Erro na resposta da IA",
-          },
-          { status: 500 }
-        );
-      }
-
-      try {
-        const result = JSON.parse(responseText);
-
-        // Validar estrutura da resposta
-        if (result.success && result.transaction) {
-          const { type, amount, description, category, date, installments } =
-            result.transaction;
-
-          if (!type || !amount || !description || !category || !date) {
-            return NextResponse.json(
-              {
-                success: false,
-                message: "Dados da transação incompletos",
-              },
-              { status: 400 }
-            );
-          }
-
-          if (type !== "income" && type !== "expense") {
-            return NextResponse.json(
-              {
-                success: false,
-                message: "Tipo de transação inválido",
-              },
-              { status: 400 }
-            );
-          }
-
-          if (typeof amount !== "number" || amount <= 0) {
-            return NextResponse.json(
-              {
-                success: false,
-                message: "Valor da transação inválido",
-              },
-              { status: 400 }
-            );
-          }
-
-          // Verificar se há parcelas detectadas pela OpenAI
-          const hasInstallments = installments && installments > 1;
-
-          if (hasInstallments) {
-            // Se há parcelas, ajustar a resposta
-            const installmentAmount = amount / installments;
-
-            return NextResponse.json({
-              ...result,
-              transaction: {
-                ...result.transaction,
-                amount: installmentAmount, // valor por parcela
-                installments: installments,
-                recurrence: "monthly",
-              },
-              isInstallment: true,
-              needsMultipleTransactions: true,
-              totalAmount: amount,
-              source: "openai_with_installments",
-              message: `Transação parcelada detectada: ${installments}x de R$ ${installmentAmount.toFixed(
-                2
-              )}`,
-            });
-          }
-        }
-
-        return NextResponse.json({
-          ...result,
-          source: "openai",
-        });
-      } catch (parseError) {
-        console.error("Erro ao fazer parse da resposta da IA:", parseError);
-        console.log("🔄 Erro no parse da OpenAI, usando fallback local...");
-        return fallbackLocalProcessing(text, metas);
-      }
-    } catch (openaiError) {
-      console.error("Erro na OpenAI:", openaiError);
-
-      // Fallback: Se a OpenAI falhar (quota, rede, etc), usar processamento local
-      if (
-        openaiError instanceof Error &&
-        (openaiError.message.includes("429") ||
-          openaiError.message.includes("quota") ||
-          openaiError.message.includes("exceeded"))
-      ) {
-        console.log("🔄 Quota da OpenAI excedida, usando fallback local...");
-      } else {
-        console.log("🔄 Erro na OpenAI, usando fallback local...");
-      }
-
-      return fallbackLocalProcessing(text, metas);
-    }
-  } catch (error) {
-    console.error("Erro geral na API de IA:", error);
+    // Usar processamento local de IA
+    return fallbackLocalProcessing(text, metas);
+  } catch {
     return NextResponse.json(
       {
         success: false,

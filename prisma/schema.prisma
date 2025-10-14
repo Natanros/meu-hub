@@ -7,6 +7,109 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Modelo de usuário para autenticação
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String? // Para login com email/senha
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relacionamentos
+  accounts     Account[]
+  sessions     Session[]
+  transactions Transaction[]
+  metas        Meta[]
+  budgets      Budget[]
+  achievements UserAchievement[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+// Modelo para definir todas as conquistas possíveis no sistema
+model Achievement {
+  id          String   @id @default(cuid())
+  key         String   @unique // Ex: 'BUDGET_MASTER', 'STREAK_7_DAYS'
+  name        String
+  description String
+  icon        String // Emoji ou nome do ícone
+  createdAt   DateTime @default(now())
+
+  // Relacionamento com os usuários que a desbloquearam
+  unlockedBy UserAchievement[]
+}
+
+// Tabela de junção para registrar as conquistas desbloqueadas por cada usuário
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verificationtokens")
+}
+
+model Budget {
+  id        String   @id @default(cuid())
+  category  String
+  amount    Float
+  month     Int // 1-12
+  year      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamento com usuário
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category, year, month]) // Garante um orçamento por categoria/mês/ano para cada usuário
+}
+
 model Transaction {
   id              Int      @id @default(autoincrement())
   type            String // 'income' ou 'expense'
@@ -16,9 +119,16 @@ model Transaction {
   date            DateTime
   metaId          String?
   meta            Meta?    @relation(fields: [metaId], references: [id])
-  installments    Int? // <-- NOVO: número de parcelas
-  recurrence      String? // <-- NOVO: tipo de recorrência ('none', 'monthly', 'weekly')
-  recurrenceCount Int? // <-- NOVO: quantidade de repetições
+  installments    Int? // número de parcelas
+  recurrence      String? // tipo de recorrência ('none', 'monthly', 'weekly')
+  recurrenceCount Int? // quantidade de repetições
+
+  // Relacionamento com usuário
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Meta {
@@ -26,4 +136,11 @@ model Meta {
   nome         String
   valor        Float
   transactions Transaction[]
+
+  // Relacionamento com usuário
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

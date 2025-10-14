@@ -3,13 +3,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Transaction } from '@/types/transaction'
-import { useToast } from '@/hooks/useToast'
-import { AdvancedChat } from '@/components/AdvancedChat'
-import { AIAnalysis } from '@/components/AIAnalysis'
-import { NotificationCenter } from '@/components/NotificationCenter'
-import { AdvancedDashboard } from '@/components/AdvancedDashboard'
+import { AdvancedChat } from '@/components/features/chat/AdvancedChat'
+import { AIAnalysis } from '@/components/features/analytics/AIAnalysis'
+import { NotificationCenter } from '@/components/features/notifications/NotificationCenter'
+import { AdvancedDashboard } from '@/components/features/analytics/AdvancedDashboard'
 import { useNotifications } from '@/hooks/useNotifications'
-import { Navigation } from '@/components/Navigation'
+import { Navigation } from '@/components/layout/Navigation'
 
 interface Meta {
   id: string
@@ -22,7 +21,6 @@ export default function IAPage() {
   // Estados principais
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [metas, setMetas] = useState<Meta[]>([])
-  const { Toast } = useToast()
   const { notifications, markAsRead, clearAll, unreadCount } = useNotifications()
 
   // Fetch de dados
@@ -67,7 +65,6 @@ export default function IAPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-2 sm:p-4">
       <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
-        <Toast />
         
         {/* Navegação */}
         <Navigation />

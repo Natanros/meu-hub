@@ -5,10 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Transaction } from '@/types/transaction'
 import { Meta } from '@/types/meta'
-import { Navigation } from '@/components/Navigation'
-import ReportsManager from '@/components/ReportsManager'
-import AlertsManager from '@/components/AlertsManager'
-import BackupManager from '@/components/BackupManager'
+import { Navigation } from '@/components/layout/Navigation'
+import ReportsManager from '@/components/features/reports/ReportsManager'
+import AlertsManager from '@/components/features/notifications/AlertsManager'
+import BackupManager from '@/components/features/system/BackupManager'
 
 export default function AnalyticsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
