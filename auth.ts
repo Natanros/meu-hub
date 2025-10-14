@@ -1,5 +1,4 @@
 import NextAuth from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
@@ -20,12 +19,13 @@ const getNextAuthSecret = () => {
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma),
+  // ❌ REMOVIDO: PrismaAdapter - conflita com JWT strategy
+  // adapter: PrismaAdapter(prisma),
   secret: getNextAuthSecret(),
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_CLIENT_ID || "dummy",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "dummy",
     }),
     Credentials({
       name: "credentials",
@@ -34,35 +34,44 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            console.log("❌ Credenciais inválidas");
+            return null;
+          }
+
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email as string,
+            },
+          });
+
+          if (!user || !user.password) {
+            console.log("❌ Usuário não encontrado ou sem senha");
+            return null;
+          }
+
+          const isPasswordValid = await bcryptjs.compare(
+            credentials.password as string,
+            user.password
+          );
+
+          if (!isPasswordValid) {
+            console.log("❌ Senha inválida");
+            return null;
+          }
+
+          console.log("✅ Login bem-sucedido:", user.email);
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            image: user.image,
+          };
+        } catch (error) {
+          console.error("💥 Erro no authorize:", error);
           return null;
         }
-
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email as string,
-          },
-        });
-
-        if (!user || !user.password) {
-          return null;
-        }
-
-        const isPasswordValid = await bcryptjs.compare(
-          credentials.password as string,
-          user.password
-        );
-
-        if (!isPasswordValid) {
-          return null;
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          image: user.image,
-        };
       },
     }),
   ],
@@ -82,21 +91,44 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        secure: process.env.NODE_ENV === "production", // true em produção (HTTPS)
+        secure: process.env.NODE_ENV === "production",
       },
     },
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
       }
+
+      // Log apenas em dev
+      if (process.env.NODE_ENV === "development") {
+        console.log("🔐 JWT Callback - Token criado/atualizado:", {
+          id: token.id,
+          email: token.email,
+          trigger,
+        });
+      }
+
       return token;
     },
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
       }
+
+      // Log apenas em dev
+      if (process.env.NODE_ENV === "development") {
+        console.log("👤 Session Callback - Sessão criada:", {
+          userId: session.user.id,
+          email: session.user.email,
+        });
+      }
+
       return session;
     },
   },
