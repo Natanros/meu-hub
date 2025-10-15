@@ -7,46 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Transaction } from '@/types/transaction';
-import { Meta } from '@/types/meta';
-
-export interface AlertRule {
-  id: string;
-  name: string;
-  type: 'budget' | 'goal' | 'spending' | 'pattern' | 'income';
-  condition: {
-    field: string;
-    operator: 'gt' | 'lt' | 'eq' | 'gte' | 'lte' | 'contains';
-    value: number | string;
-  };
-  action: {
-    type: 'notification' | 'email' | 'webhook';
-    message: string;
-    severity: 'low' | 'medium' | 'high' | 'critical';
-  };
-  isActive: boolean;
-  frequency: 'immediate' | 'daily' | 'weekly' | 'monthly';
-  lastTriggered?: Date;
-}
-
-export interface SmartAlert {
-  id: string;
-  title: string;
-  message: string;
-  type: 'success' | 'warning' | 'error' | 'info';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  category: 'budget' | 'goal' | 'pattern' | 'insight' | 'prediction';
-  timestamp: Date;
-  isRead: boolean;
-  actionable: boolean;
-  suggestedActions?: string[];
-  relatedData?: {
-    transactionId?: number;
-    metaId?: string;
-    category?: string;
-    amount?: number;
-  };
-}
+import { Transaction, Meta, AlertRule, SmartAlert } from '@/types';
 
 interface AlertsManagerProps {
   transactions: Transaction[];
@@ -119,9 +80,13 @@ const AlertsManager: React.FC<AlertsManagerProps> = ({ transactions, metas }) =>
           message: `Gastos em ${category} esta semana (R$ ${weekAmount.toFixed(2)}) estão 50% acima da média mensal`,
           type: 'warning',
           severity: 'medium',
+          priority: 'medium',
           category: 'pattern',
           timestamp: now,
+          createdAt: now,
           isRead: false,
+          read: false,
+          dismissed: false,
           actionable: true,
           suggestedActions: [
             `Revisar gastos recentes em ${category}`,
@@ -145,9 +110,13 @@ const AlertsManager: React.FC<AlertsManagerProps> = ({ transactions, metas }) =>
         message: `Transação de R$ ${expense.amount.toFixed(2)} em ${expense.category} ${expense.description ? `- ${expense.description}` : ''}`,
         type: 'warning',
         severity: 'high',
+        priority: 'high',
         category: 'budget',
         timestamp: now,
+        createdAt: now,
         isRead: false,
+        read: false,
+        dismissed: false,
         actionable: true,
         suggestedActions: [
           'Verificar se o gasto é necessário',
@@ -171,9 +140,13 @@ const AlertsManager: React.FC<AlertsManagerProps> = ({ transactions, metas }) =>
         message: `Média de ${dailyTransactions.toFixed(1)} transações por dia na última semana`,
         type: 'info',
         severity: 'low',
+        priority: 'low',
         category: 'pattern',
         timestamp: now,
+        createdAt: now,
         isRead: false,
+        read: false,
+        dismissed: false,
         actionable: true,
         suggestedActions: [
           'Consolidar compras pequenas',
@@ -193,9 +166,13 @@ const AlertsManager: React.FC<AlertsManagerProps> = ({ transactions, metas }) =>
           message: `Meta ${meta.nome} (R$ ${meta.valor.toFixed(2)}) precisa de acompanhamento`,
           type: 'info',
           severity: 'low',
+          priority: 'low',
           category: 'goal',
           timestamp: now,
+          createdAt: now,
           isRead: false,
+          read: false,
+          dismissed: false,
           actionable: true,
           suggestedActions: [
             'Verificar progresso da meta',
@@ -225,9 +202,13 @@ const AlertsManager: React.FC<AlertsManagerProps> = ({ transactions, metas }) =>
         message: `Taxa de poupança de ${savingsRate.toFixed(1)}% está abaixo do recomendado (20%)`,
         type: 'warning',
         severity: 'medium',
+        priority: 'medium',
         category: 'insight',
         timestamp: now,
+        createdAt: now,
         isRead: false,
+        read: false,
+        dismissed: false,
         actionable: true,
         suggestedActions: [
           'Revisar gastos desnecessários',
@@ -242,9 +223,13 @@ const AlertsManager: React.FC<AlertsManagerProps> = ({ transactions, metas }) =>
         message: `Taxa de poupança de ${savingsRate.toFixed(1)}% está acima da média`,
         type: 'success',
         severity: 'low',
+        priority: 'low',
         category: 'insight',
         timestamp: now,
+        createdAt: now,
         isRead: false,
+        read: false,
+        dismissed: false,
         actionable: true,
         suggestedActions: [
           'Considerar investimentos',
@@ -265,9 +250,13 @@ const AlertsManager: React.FC<AlertsManagerProps> = ({ transactions, metas }) =>
         message: `Baseado no padrão atual, gastos anuais podem exceder receitas em R$ ${(projectedYearExpenses - totalIncome * 12).toFixed(2)}`,
         type: 'error',
         severity: 'critical',
+        priority: 'critical',
         category: 'prediction',
         timestamp: now,
+        createdAt: now,
         isRead: false,
+        read: false,
+        dismissed: false,
         actionable: true,
         suggestedActions: [
           'Revisar orçamento imediatamente',
@@ -521,7 +510,7 @@ const AlertsManager: React.FC<AlertsManagerProps> = ({ transactions, metas }) =>
           </Card>
         ) : (
           alerts
-            .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+            .sort((a, b) => (b.timestamp?.getTime() || 0) - (a.timestamp?.getTime() || 0))
             .map(alert => (
               <Card key={alert.id} className={`p-4 ${!alert.isRead ? 'ring-2 ring-blue-200' : ''}`}>
                 <div className="flex items-start justify-between">
@@ -533,10 +522,10 @@ const AlertsManager: React.FC<AlertsManagerProps> = ({ transactions, metas }) =>
                         alert.type === 'error' ? 'bg-red-100 text-red-800' :
                         'bg-blue-100 text-blue-800'
                       }`}>
-                        {alert.severity.toUpperCase()}
+                        {alert.severity?.toUpperCase() || 'INFO'}
                       </span>
                       <span className="text-sm text-gray-500">
-                        {alert.timestamp.toLocaleString()}
+                        {alert.timestamp?.toLocaleString() || 'N/A'}
                       </span>
                     </div>
                     <h4 className="font-semibold text-gray-800 dark:text-white mb-1">

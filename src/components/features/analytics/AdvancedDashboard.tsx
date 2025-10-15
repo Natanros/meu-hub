@@ -5,39 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { FinanceCharts } from '@/components/features/analytics/Charts/FinanceCharts'
 import { MetasProgressChartAdvanced } from '@/components/features/analytics/Charts/MetasProgressChartAdvanced'
-import { Transaction } from '@/types/transaction'
-
-interface Meta {
-  id: string
-  nome: string
-  valor: number
-}
+import { Transaction, Meta, MonthlyData, CategoryData, Insight } from '@/types'
 
 interface AdvancedDashboardProps {
   transactions: Transaction[]
   metas: Meta[]
-}
-
-interface MonthlyData {
-  month: string
-  income: number
-  expense: number
-  balance: number
-}
-
-interface CategoryData {
-  name: string
-  value: number
-  percentage: number
-  trend: 'up' | 'down' | 'stable'
-}
-
-interface Insight {
-  type: 'success' | 'warning' | 'info' | 'danger'
-  title: string
-  message: string
-  value?: string
-  icon: string
 }
 
 export function AdvancedDashboard({ transactions, metas }: AdvancedDashboardProps) {
@@ -154,11 +126,12 @@ export function AdvancedDashboard({ transactions, metas }: AdvancedDashboardProp
     // Insight de categoria top
     if (categoryAnalysis.length > 0) {
       const topCategory = categoryAnalysis[0]
+      const categoryValue = topCategory.value || topCategory.amount || 0
       insights.push({
         type: 'info',
         title: 'Categoria Principal',
-        message: `${topCategory.name} representa ${topCategory.percentage.toFixed(1)}% dos gastos`,
-        value: `R$ ${topCategory.value.toFixed(2)}`,
+        message: `${topCategory.name || topCategory.category || 'Sem nome'} representa ${topCategory.percentage.toFixed(1)}% dos gastos`,
+        value: `R$ ${categoryValue.toFixed(2)}`,
         icon: '📊'
       })
     }
@@ -383,7 +356,7 @@ export function AdvancedDashboard({ transactions, metas }: AdvancedDashboardProp
                       </div>
                     </div>
                     <div className="ml-4 text-right">
-                      <div className="font-bold">R$ {category.value.toFixed(2)}</div>
+                      <div className="font-bold">R$ {(category.value || category.amount || 0).toFixed(2)}</div>
                     </div>
                   </div>
                 ))}

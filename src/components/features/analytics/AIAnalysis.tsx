@@ -3,21 +3,7 @@
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Transaction } from '@/types/transaction'
-
-interface Meta {
-  id: string
-  nome: string
-  valor: number
-}
-
-interface AIInsight {
-  type: 'warning' | 'success' | 'info' | 'tip'
-  title: string
-  message: string
-  icon: string
-  action?: string
-}
+import { Transaction, Meta, AIInsight } from '@/types'
 
 interface AIAnalysisProps {
   transactions: Transaction[]

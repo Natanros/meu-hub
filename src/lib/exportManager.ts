@@ -1,23 +1,8 @@
 "use client";
 
 import { Transaction } from "@/types/transaction";
-
-interface Meta {
-  id: string;
-  nome: string;
-  valor: number;
-}
-
-export interface ExportData {
-  transactions: Transaction[];
-  metas: Meta[];
-  summary: {
-    totalReceitas: number;
-    totalDespesas: number;
-    saldo: number;
-    periodo: string;
-  };
-}
+import { Meta } from "@/types/meta";
+import { ExportData } from "@/types/export";
 
 export class ExportManager {
   // Exportar para CSV avançado
@@ -31,10 +16,14 @@ export class ExportManager {
     let csvContent = `# RELATÓRIO FINANCEIRO - ${new Date().toLocaleDateString(
       "pt-BR"
     )}\n`;
-    csvContent += `# Período: ${summary.periodo}\n`;
-    csvContent += `# Total Receitas: R$ ${summary.totalReceitas.toFixed(2)}\n`;
-    csvContent += `# Total Despesas: R$ ${summary.totalDespesas.toFixed(2)}\n`;
-    csvContent += `# Saldo: R$ ${summary.saldo.toFixed(2)}\n\n`;
+    csvContent += `# Período: ${summary.periodo || "N/A"}\n`;
+    csvContent += `# Total Receitas: R$ ${(summary.totalReceitas || 0).toFixed(
+      2
+    )}\n`;
+    csvContent += `# Total Despesas: R$ ${(summary.totalDespesas || 0).toFixed(
+      2
+    )}\n`;
+    csvContent += `# Saldo: R$ ${(summary.saldo || 0).toFixed(2)}\n\n`;
 
     // Seção de Transações
     csvContent += `TRANSAÇÕES\n`;
@@ -81,7 +70,8 @@ export class ExportManager {
     Object.entries(categorias)
       .sort(([, a], [, b]) => b - a)
       .forEach(([cat, valor]) => {
-        const percentual = (valor / summary.totalDespesas) * 100;
+        const totalDespesas = summary.totalDespesas || 1; // Evita divisão por zero
+        const percentual = (valor / totalDespesas) * 100;
         csvContent += `${cat},${valor.toFixed(2)},${percentual.toFixed(1)}%\n`;
       });
 
@@ -106,17 +96,19 @@ export class ExportManager {
 
 📊 RESUMO GERAL
 ═══════════════════════════════════════════════════════════════════════════════
-💰 Saldo Atual: R$ ${summary.saldo.toFixed(2)} ${
-      summary.saldo > 0 ? "✅" : "⚠️"
+💰 Saldo Atual: R$ ${(summary.saldo || 0).toFixed(2)} ${
+      (summary.saldo || 0) > 0 ? "✅" : "⚠️"
     }
-📈 Total Receitas: R$ ${summary.totalReceitas.toFixed(2)}
-📉 Total Despesas: R$ ${summary.totalDespesas.toFixed(2)}
+📈 Total Receitas: R$ ${(summary.totalReceitas || 0).toFixed(2)}
+📉 Total Despesas: R$ ${(summary.totalDespesas || 0).toFixed(2)}
 📊 Taxa de Economia: ${
-      summary.totalReceitas > 0
-        ? ((summary.saldo / summary.totalReceitas) * 100).toFixed(1)
+      (summary.totalReceitas || 0) > 0
+        ? (((summary.saldo || 0) / (summary.totalReceitas || 1)) * 100).toFixed(
+            1
+          )
         : "0"
     }%
-📅 Período Analisado: ${summary.periodo}
+📅 Período Analisado: ${summary.periodo || "N/A"}
 🔢 Total de Transações: ${transactions.length}
 
 🎯 STATUS DAS METAS (${metas.length} metas)
@@ -175,7 +167,8 @@ ${index + 1}. ${status} ${meta.nome}
         .sort(([, a], [, b]) => b - a)
         .slice(0, 10)
         .forEach(([categoria, valor], index) => {
-          const percentual = (valor / summary.totalDespesas) * 100;
+          const totalDespesas = summary.totalDespesas || 1;
+          const percentual = (valor / totalDespesas) * 100;
           const barLength = Math.floor(percentual / 2);
           const bar =
             "█".repeat(barLength) + "░".repeat(Math.max(0, 25 - barLength));
@@ -193,7 +186,11 @@ ${index + 1}. ${categoria.toUpperCase()}
 💡 INSIGHTS E RECOMENDAÇÕES
 ═══════════════════════════════════════════════════════════════════════════════`;
 
-    if (summary.saldo < 0) {
+    const saldo = summary.saldo || 0;
+    const totalReceitas = summary.totalReceitas || 0;
+    const totalDespesas = summary.totalDespesas || 1;
+
+    if (saldo < 0) {
       report += `
 ⚠️  ALERTA: Saldo negativo detectado!
 📝 Ação recomendada: Revisar gastos urgentemente
@@ -201,7 +198,7 @@ ${index + 1}. ${categoria.toUpperCase()}
         Object.entries(categorias).sort(([, a], [, b]) => b - a)[0]?.[0] ||
         "controle de despesas"
       }`;
-    } else if (summary.saldo > summary.totalReceitas * 0.3) {
+    } else if (saldo > totalReceitas * 0.3) {
       report += `
 💰 EXCELENTE: Boa reserva financeira!
 📈 Sugestão: Considere investir o excedente
@@ -209,19 +206,19 @@ ${index + 1}. ${categoria.toUpperCase()}
     } else {
       report += `
 ✅ BOM: Situação financeira equilibrada
-📊 Continue: Mantendo o controle atual
+📊Continue: Mantendo o controle atual
 🎯 Melhoria: Tente economizar mais 5-10%`;
     }
 
     // Categorias que merecem atenção
     const categoriaProblematica = Object.entries(categorias).find(
-      ([, valor]) => valor / summary.totalDespesas > 0.4
+      ([, valor]) => valor / totalDespesas > 0.4
     );
 
     if (categoriaProblematica) {
       report += `
 ⚠️  ATENÇÃO: Categoria "${categoriaProblematica[0]}" consome ${(
-        (categoriaProblematica[1] / summary.totalDespesas) *
+        (categoriaProblematica[1] / totalDespesas) *
         100
       ).toFixed(1)}% do orçamento
 💡 Recomendação: Revisar gastos nesta categoria`;
@@ -247,7 +244,7 @@ ${index + 1}. ${categoria.toUpperCase()}
 💸 Gastos: R$ ${gastosUltimoMes.toFixed(2)}
 📈 Média diária: R$ ${(gastosUltimoMes / 30).toFixed(2)}
 🎯 Status: ${
-      gastosUltimoMes > summary.totalDespesas * 0.4
+      gastosUltimoMes > totalDespesas * 0.4
         ? "Gastos elevados ⚠️"
         : "Gastos controlados ✅"
     }`;
@@ -321,6 +318,9 @@ ${index + 1}. ${categoria.toUpperCase()}
       transactions: filteredTransactions,
       metas,
       summary: {
+        totalIncome: totalReceitas,
+        totalExpenses: totalDespesas,
+        balance: totalReceitas - totalDespesas,
         totalReceitas,
         totalDespesas,
         saldo: totalReceitas - totalDespesas,

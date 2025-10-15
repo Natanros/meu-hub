@@ -3,14 +3,10 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSession } from "next-auth/react";
-import { Transaction } from "@/types/transaction";
-import { Meta } from "@/types/meta";
+import { Transaction, Meta, FinancialSummary } from "@/types";
 
-export interface FinancialSummary {
-  saldo: number;
-  totalReceitas: number;
-  totalDespesas: number;
-}
+// Re-exportar para compatibilidade com imports existentes
+export type { FinancialSummary };
 
 export function useFinancialData() {
   const { status } = useSession();

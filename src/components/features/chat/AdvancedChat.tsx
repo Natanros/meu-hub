@@ -4,19 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Transaction } from '@/types/transaction'
-
-interface Meta {
-  id: string
-  nome: string
-  valor: number
-}
-
-interface ChatMessage {
-  role: 'user' | 'assistant'
-  content: string
-  timestamp: Date
-}
+import { Transaction, Meta, ChatMessage } from '@/types'
 
 interface AdvancedChatProps {
   transactions: Transaction[]
@@ -226,7 +214,7 @@ export function AdvancedChat({ transactions, metas, saldo }: AdvancedChatProps) 
                 <p className={`text-xs mt-1 ${
                   message.role === 'user' ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'
                 }`}>
-                  {formatTime(message.timestamp)}
+                  {message.timestamp && formatTime(message.timestamp)}
                 </p>
               </div>
             </div>

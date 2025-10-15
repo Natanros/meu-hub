@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser } from "../../../lib/auth-helper";
-
-// Interface para metas
-interface Meta {
-  id: string;
-  nome: string;
-  valor: number;
-}
+import { Meta } from "@/types";
 
 // Interface para dados de parcelamento
 interface InstallmentData {

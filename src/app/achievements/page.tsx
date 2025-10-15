@@ -10,6 +10,8 @@ import { Progress } from "@/components/ui/progress";
 interface AchievementWithStatus extends Achievement {
   unlocked: boolean;
   unlockedAt: Date | null;
+  isUnlocked?: boolean;
+  progress?: number;
 }
 
 export default function AchievementsPage() {

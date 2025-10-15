@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Transaction } from '@/types/transaction'
-import { ExportManager, ExportData } from '@/lib/exportManager'
+import { ExportData } from '@/types/export'
+import { ExportManager } from '@/lib/exportManager'
 import { getCurrentDateLocal } from '@/lib/dateUtils'
 
 interface Meta {
@@ -88,6 +89,9 @@ export function ExportControls({ transactions, metas, onExportComplete }: Export
       transactions: filteredTransactions,
       metas,
       summary: {
+        totalIncome: totalReceitas,
+        totalExpenses: totalDespesas,
+        balance: totalReceitas - totalDespesas,
         totalReceitas,
         totalDespesas,
         saldo: totalReceitas - totalDespesas,
@@ -283,21 +287,21 @@ export function ExportControls({ transactions, metas, onExportComplete }: Export
             </div>
             <div>
               <div className="text-gray-600 dark:text-gray-400">Receitas</div>
-              <div className="font-bold text-green-600">R$ {previewData.summary.totalReceitas.toFixed(2)}</div>
+              <div className="font-bold text-green-600">R$ {(previewData.summary.totalReceitas || 0).toFixed(2)}</div>
             </div>
             <div>
               <div className="text-gray-600 dark:text-gray-400">Despesas</div>
-              <div className="font-bold text-red-600">R$ {previewData.summary.totalDespesas.toFixed(2)}</div>
+              <div className="font-bold text-red-600">R$ {(previewData.summary.totalDespesas || 0).toFixed(2)}</div>
             </div>
             <div>
               <div className="text-gray-600 dark:text-gray-400">Saldo</div>
-              <div className={`font-bold ${previewData.summary.saldo >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                R$ {previewData.summary.saldo.toFixed(2)}
+              <div className={`font-bold ${(previewData.summary.saldo || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                R$ {(previewData.summary.saldo || 0).toFixed(2)}
               </div>
             </div>
           </div>
           <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
-            📅 Período: {previewData.summary.periodo}
+            📅 Período: {previewData.summary.periodo || 'N/A'}
           </div>
         </div>
 

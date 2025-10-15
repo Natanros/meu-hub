@@ -6,6 +6,7 @@
 import { Transaction } from "@/types/transaction";
 import { Meta } from "@/types/meta";
 
+// Tipos específicos para o PDF Report Generator (mantidos internos por serem únicos)
 export interface ReportConfig {
   type: "mensal" | "anual" | "personalizado";
   periodo: {

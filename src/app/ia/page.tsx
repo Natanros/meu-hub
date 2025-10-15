@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Transaction } from '@/types/transaction'
+import { Transaction, Meta } from '@/types'
 import { AdvancedChat } from '@/components/features/chat/AdvancedChat'
 import { AIAnalysis } from '@/components/features/analytics/AIAnalysis'
 import { NotificationCenter } from '@/components/features/notifications/NotificationCenter'
@@ -11,13 +11,6 @@ import { useNotifications } from '@/hooks/useNotifications'
 import { Navigation } from '@/components/layout/Navigation'
 import UserHeader from '@/components/layout/UserHeader'
 import ProtectedRoute from '@/components/features/auth/ProtectedRoute'
-
-interface Meta {
-  id: string
-  nome: string
-  valor: number
-  transacoes: number[]
-}
 
 export default function IAPage() {
   // Estados principais

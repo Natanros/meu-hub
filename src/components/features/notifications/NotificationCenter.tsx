@@ -2,15 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
-interface Notification {
-  id: string
-  type: 'success' | 'warning' | 'info' | 'error'
-  title: string
-  message: string
-  timestamp: Date
-  read: boolean
-}
+import { Notification } from '@/types'
 
 interface NotificationCenterProps {
   notifications: Notification[]
@@ -94,10 +86,10 @@ export function NotificationCenter({
                         {notification.title}
                       </h4>
                       <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">
-                        {notification.timestamp.toLocaleTimeString('pt-BR', { 
+                        {notification.timestamp?.toLocaleTimeString('pt-BR', { 
                           hour: '2-digit', 
                           minute: '2-digit' 
-                        })}
+                        }) || 'N/A'}
                       </span>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">

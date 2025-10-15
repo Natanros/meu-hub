@@ -1,35 +1,12 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
-import { Transaction } from '@/types/transaction'
-
-interface Meta {
-  id: string
-  nome: string
-  valor: number
-}
-
-interface Notification {
-  id: string
-  type: 'success' | 'warning' | 'info' | 'error'
-  title: string
-  message: string
-  timestamp: Date
-  read: boolean
-  icon: string
-  category: 'finance' | 'goals' | 'budget' | 'insights' | 'alerts'
-  priority: 'low' | 'medium' | 'high' | 'critical'
-  actionable?: boolean
-  action?: {
-    label: string
-    callback: () => void
-  }
-}
+import { useState, useEffect, useMemo } from 'react';
+import { Transaction, Meta, Notification } from '@/types';
 
 interface UseNotificationsProps {
-  transactions?: Transaction[]
-  metas?: Meta[]
-  saldo?: number
+  transactions?: Transaction[];
+  metas?: Meta[];
+  saldo?: number;
 }
 
 export function useNotifications(props: UseNotificationsProps = {}) {
@@ -60,6 +37,7 @@ export function useNotifications(props: UseNotificationsProps = {}) {
     title,
     message,
     timestamp: new Date(),
+    createdAt: new Date(),
     read: false,
     icon,
     category,
@@ -438,6 +416,7 @@ export function useNotifications(props: UseNotificationsProps = {}) {
           // Verificar se já existe uma notificação similar recente
           const hasRecentSimilar = prev.some(n => 
             n.title === tipNotification.title && 
+            n.timestamp &&
             (Date.now() - n.timestamp.getTime()) < 30 * 60 * 1000 // 30 minutos
           )
           
@@ -502,18 +481,22 @@ export function useNotifications(props: UseNotificationsProps = {}) {
   const criticalCount = notifications.filter(n => n.priority === 'critical' && !n.read).length
   
   const notificationsByCategory = notifications.reduce((acc, notif) => {
-    acc[notif.category] = (acc[notif.category] || 0) + 1
+    if (notif.category) {
+      acc[notif.category] = (acc[notif.category] || 0) + 1
+    }
     return acc
   }, {} as Record<string, number>)
 
   const notificationsByPriority = notifications.reduce((acc, notif) => {
-    acc[notif.priority] = (acc[notif.priority] || 0) + 1
+    if (notif.priority) {
+      acc[notif.priority] = (acc[notif.priority] || 0) + 1
+    }
     return acc
   }, {} as Record<string, number>)
 
   const recentNotifications = notifications.filter(n => {
     const hourAgo = new Date(Date.now() - 60 * 60 * 1000)
-    return n.timestamp >= hourAgo
+    return n.timestamp && n.timestamp >= hourAgo
   })
 
   return {

@@ -8,12 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { addPendingTransaction } from '@/lib/indexedDB'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { getCurrentDateLocal } from '@/lib/dateUtils'
-
-interface Meta {
-  id: string
-  nome: string
-  valor: number
-}
+import { Meta } from '@/types'
 
 interface TransactionFormProps {
   onTransactionAdded: () => void

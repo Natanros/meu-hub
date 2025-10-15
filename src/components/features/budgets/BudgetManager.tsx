@@ -6,21 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Trash2, Edit, PlusCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/useToast';
-
-// Tipos
-interface Budget {
-  id: string;
-  category: string;
-  amount: number;
-  month: number;
-  year: number;
-}
-
-interface Transaction {
-  category: string;
-  amount: number;
-  type: 'income' | 'expense';
-}
+import { Budget, Transaction } from '@/types';
 
 interface BudgetManagerProps {
   transactions: Transaction[];

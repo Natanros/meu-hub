@@ -2,13 +2,7 @@
 import { Transaction } from "@prisma/client";
 import { startOfMonth, subMonths, endOfMonth } from "date-fns";
 import { prisma } from "./prisma";
-
-export interface Insight {
-  type: "info" | "warning" | "success";
-  title: string;
-  message: string;
-  icon: string;
-}
+import { Insight } from "@/types/insight";
 
 type CategorySpending = {
   [category: string]: number;

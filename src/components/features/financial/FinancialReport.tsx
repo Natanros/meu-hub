@@ -8,19 +8,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Transaction } from '@/types/transaction';
+import { Transaction } from '@/types';
 import { getCurrentMonthRange, formatDateLocal } from '@/lib/dateUtils';
 
 interface FinancialReportProps {
   transactions: Transaction[];
 }
 
-interface DateRange {
-  start: string;
-  end: string;
-}
-
-interface ReportData {
+// Tipo local para este componente (difere do ReportData global)
+interface LocalReportData {
   totalReceitas: number;
   totalDespesas: number;
   saldo: number;
@@ -39,7 +35,7 @@ interface ReportData {
 
 const FinancialReport: React.FC<FinancialReportProps> = ({ transactions }) => {
   // Estados
-  const [dateRange, setDateRange] = useState<DateRange>({
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
     start: '',
     end: ''
   });
@@ -81,7 +77,7 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ transactions }) => {
   };
 
   // Calcular dados do relatório
-  const reportData = useMemo((): ReportData => {
+  const reportData = useMemo((): LocalReportData => {
     if (!dateRange.start || !dateRange.end) {
       return {
         totalReceitas: 0,

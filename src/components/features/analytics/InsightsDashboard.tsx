@@ -6,7 +6,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Insight } from "@/lib/financialInsights";
+import { Insight } from "@/types/insight";
 import { motion, AnimatePresence } from "framer-motion";
 
 const InsightCard = ({ insight, index }: { insight: Insight; index: number }) => {
@@ -14,6 +14,7 @@ const InsightCard = ({ insight, index }: { insight: Insight; index: number }) =>
     success: "border-green-500 bg-green-50 dark:bg-green-900/20",
     warning: "border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20",
     info: "border-blue-500 bg-blue-50 dark:bg-blue-900/20",
+    danger: "border-red-500 bg-red-50 dark:bg-red-900/20",
   };
 
   return (

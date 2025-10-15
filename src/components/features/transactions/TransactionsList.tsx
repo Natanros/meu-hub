@@ -2,31 +2,23 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-
-interface Transaction {
-  id: number
-  type: 'income' | 'expense'
-  category: string
-  amount: number
-  description?: string
-  date: string
-  metaId?: string
-}
-
-interface Meta {
-  id: string
-  nome: string
-  valor: number
-}
+import { Transaction, Meta } from '@/types'
 
 interface TransactionsListProps {
   transactions: Transaction[]
   metas: Meta[]
-  showToast: (message: string, type: 'success' | 'error') => void
-  onTransactionDeleted: () => void
+  onDelete?: (id: number) => void
+  onTransactionDeleted?: () => void
+  showToast?: (message: string, type: 'success' | 'error') => void
 }
 
-export function TransactionsList({ transactions, metas, showToast, onTransactionDeleted }: TransactionsListProps) {
+export function TransactionsList({ 
+  transactions, 
+  metas, 
+  onDelete,
+  onTransactionDeleted,
+  showToast 
+}: TransactionsListProps) {
   const deleteTransaction = async (id: number) => {
     try {
       const response = await fetch(`/api/transactions/${id}`, {
@@ -37,11 +29,12 @@ export function TransactionsList({ transactions, metas, showToast, onTransaction
         throw new Error('Erro ao deletar transação')
       }
 
-      showToast('Transação removida com sucesso!', 'success')
-      onTransactionDeleted()
+      showToast?.('Transação removida com sucesso!', 'success')
+      onTransactionDeleted?.()
+      onDelete?.(id)
     } catch (error) {
       console.error('Erro ao deletar transação:', error)
-      showToast('Erro ao remover transação', 'error')
+      showToast?.('Erro ao remover transação', 'error')
     }
   }
 

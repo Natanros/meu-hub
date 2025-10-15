@@ -8,19 +8,11 @@
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Transaction } from '@/types/transaction';
+import { Transaction, PaymentPeriod } from '@/types';
 import { formatDateLocal } from '@/lib/dateUtils';
 
 interface UpcomingPaymentsDashboardProps {
   transactions: Transaction[];
-}
-
-interface PaymentPeriod {
-  name: string;
-  start: Date;
-  end: Date;
-  color: string;
-  icon: string;
 }
 
 const UpcomingPaymentsDashboard: React.FC<UpcomingPaymentsDashboardProps> = ({ transactions }) => {
@@ -100,6 +92,8 @@ const UpcomingPaymentsDashboard: React.FC<UpcomingPaymentsDashboardProps> = ({ t
     const payments = transactions.filter(t => {
       const transactionDate = new Date(t.date);
       transactionDate.setHours(0, 0, 0, 0); // Normalizar para início do dia
+      
+      if (!period.start || !period.end) return false;
       
       const periodStart = new Date(period.start);
       periodStart.setHours(0, 0, 0, 0);
