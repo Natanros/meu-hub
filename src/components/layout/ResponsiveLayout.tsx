@@ -5,9 +5,10 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 import { ThemeToggleButton } from '@/components/shared/ThemeToggleButton';
 import { Button } from '@/components/ui/button';
 import { usePWA, useMobileOptimizations } from '@/hooks/usePWA';
@@ -21,12 +22,59 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isMobile, isStandalone } = usePWA();
   const { status } = useSession();
+  const pathname = usePathname();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   
   // Aplicar otimizações mobile
   useMobileOptimizations();
   
   // Verificar se o usuário está autenticado
   const isAuthenticated = status === 'authenticated';
+
+  // Força scroll para o topo quando a rota mudar
+  useEffect(() => {
+    const resetScroll = () => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = 0;
+      }
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    };
+
+    // Executa imediatamente
+    resetScroll();
+
+    // Executa novamente após delays progressivos para garantir
+    const timer1 = setTimeout(resetScroll, 0);
+    const timer2 = setTimeout(resetScroll, 50);
+    const timer3 = setTimeout(resetScroll, 100);
+    const timer4 = setTimeout(resetScroll, 200);
+
+    // Observer para detectar mudanças no DOM e resetar scroll
+    let observer: MutationObserver | null = null;
+    if (scrollContainerRef.current) {
+      observer = new MutationObserver(() => {
+        resetScroll();
+      });
+      
+      observer.observe(scrollContainerRef.current, {
+        childList: true,
+        subtree: true
+      });
+
+      // Para o observer após 1 segundo
+      setTimeout(() => {
+        observer?.disconnect();
+      }, 1000);
+    }
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      clearTimeout(timer4);
+      observer?.disconnect();
+    };
+  }, [pathname]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -169,7 +217,11 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Content with mobile padding - Ajusta padding baseado no estado de autenticação e dispositivo */}
-        <div className={`flex-1 p-4 md:p-8 ${!isAuthenticated ? 'pt-16 md:pt-20' : isAuthenticated && isMobile ? 'pt-16 md:pt-8' : 'pt-4 md:pt-8'} overflow-auto mobile-scroll ${isMobile ? 'ios-keyboard-adjust' : ''}`} data-scroll>
+        <div 
+          ref={scrollContainerRef}
+          className={`flex-1 p-4 md:p-8 ${!isAuthenticated ? 'pt-16 md:pt-20' : isAuthenticated && isMobile ? 'pt-16 md:pt-8' : 'pt-4 md:pt-8'} overflow-auto mobile-scroll ${isMobile ? 'ios-keyboard-adjust' : ''}`} 
+          data-scroll
+        >
           {children}
         </div>
         

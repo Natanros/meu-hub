@@ -35,9 +35,13 @@ export function AdvancedChat({ transactions, metas, saldo }: AdvancedChatProps) 
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const chatContainerRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    // Scroll apenas dentro do container do chat, não da página inteira
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+    }
   }
 
   useEffect(() => {
@@ -186,7 +190,10 @@ export function AdvancedChat({ transactions, metas, saldo }: AdvancedChatProps) 
       
       <CardContent className="flex-1 flex flex-col p-2 sm:p-4 min-h-0 overflow-hidden">
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto space-y-3 sm:space-y-4 mb-3 sm:mb-4 pr-1 sm:pr-2 min-h-0 scrollbar-thin">
+        <div 
+          ref={chatContainerRef}
+          className="flex-1 overflow-y-auto space-y-3 sm:space-y-4 mb-3 sm:mb-4 pr-1 sm:pr-2 min-h-0 scrollbar-thin"
+        >
           {messages.map((message, index) => (
             <div
               key={index}

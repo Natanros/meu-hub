@@ -30,11 +30,29 @@ const UpcomingPaymentsDashboard: React.FC<UpcomingPaymentsDashboardProps> = ({ t
   // Calcular dados do período selecionado
   const periodData = useMemo(() => {
     // Períodos pré-definidos (movidos para dentro do useMemo)
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    // Calcular o início da semana atual (domingo = 0, segunda = 1, etc)
+    const dayOfWeek = today.getDay();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - dayOfWeek); // Volta para domingo
+    
+    // Calcular o fim da semana atual
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Sábado
+    
+    // Calcular o início do mês atual
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    
+    // Calcular o fim do mês atual
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    
     const periods: { [key: string]: PaymentPeriod } = {
       thisWeek: {
         name: 'Esta Semana',
-        start: new Date(),
-        end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        start: startOfWeek,
+        end: endOfWeek,
         color: 'bg-blue-50 border-blue-200 text-blue-700',
         icon: '📅'
       },
@@ -47,8 +65,8 @@ const UpcomingPaymentsDashboard: React.FC<UpcomingPaymentsDashboardProps> = ({ t
       },
       thisMonth: {
         name: 'Este Mês',
-        start: new Date(),
-        end: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+        start: startOfMonth,
+        end: endOfMonth,
         color: 'bg-green-50 border-green-200 text-green-700',
         icon: '🗓️'
       },
@@ -79,9 +97,6 @@ const UpcomingPaymentsDashboard: React.FC<UpcomingPaymentsDashboardProps> = ({ t
     if (!period) return { payments: [], total: 0, byCategory: {}, byDay: {}, periods };
 
     // Filtrar transações do período (apenas despesas)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Normalizar para início do dia
-    
     const payments = transactions.filter(t => {
       const transactionDate = new Date(t.date);
       transactionDate.setHours(0, 0, 0, 0); // Normalizar para início do dia

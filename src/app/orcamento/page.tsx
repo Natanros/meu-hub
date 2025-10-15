@@ -5,6 +5,9 @@ import { useSession } from 'next-auth/react';
 import { BudgetManager } from '@/components/features/budgets/BudgetManager';
 import { Transaction } from '@/types/transaction';
 import { Loader2 } from 'lucide-react';
+import UserHeader from '@/components/layout/UserHeader';
+import { Navigation } from '@/components/layout/Navigation';
+import ProtectedRoute from '@/components/features/auth/ProtectedRoute';
 
 // Extrai categorias únicas das transações
 const getUniqueCategories = (transactions: Transaction[]): string[] => {
@@ -60,12 +63,23 @@ export default function OrcamentoPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <h1 className="text-3xl font-bold mb-6">Meus Orçamentos</h1>
-      <p className="mb-8 text-gray-600 dark:text-gray-400">
-        Defina limites de gastos mensais para suas categorias e acompanhe seu progresso.
-      </p>
-      <BudgetManager transactions={transactions} categories={categories} />
-    </div>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-2 sm:p-4">
+        <div className="max-w-7xl mx-auto space-y-6">
+          
+          <UserHeader />
+          <Navigation />
+          
+          <div className="text-center py-8 sm:py-12 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-700 dark:to-pink-700 text-white rounded-lg shadow-xl">
+            <h1 className="text-3xl sm:text-5xl font-bold mb-3">💰 Orçamentos</h1>
+            <p className="text-lg sm:text-xl text-purple-100 dark:text-purple-200">
+              Defina limites e acompanhe seus gastos por categoria
+            </p>
+          </div>
+
+          <BudgetManager transactions={transactions} categories={categories} />
+        </div>
+      </div>
+    </ProtectedRoute>
   );
 }

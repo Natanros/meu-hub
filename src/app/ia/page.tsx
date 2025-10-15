@@ -9,6 +9,8 @@ import { NotificationCenter } from '@/components/features/notifications/Notifica
 import { AdvancedDashboard } from '@/components/features/analytics/AdvancedDashboard'
 import { useNotifications } from '@/hooks/useNotifications'
 import { Navigation } from '@/components/layout/Navigation'
+import UserHeader from '@/components/layout/UserHeader'
+import ProtectedRoute from '@/components/features/auth/ProtectedRoute'
 
 interface Meta {
   id: string
@@ -49,25 +51,34 @@ export default function IAPage() {
     fetchMetas()
   }, [fetchTransactions, fetchMetas])
 
-  // Cálculos financeiros
-  const saldo = transactions.reduce((acc, item) => {
-    return acc + (item.type === 'income' ? item.amount : -item.amount)
-  }, 0)
+  // Cálculos financeiros com verificação de segurança
+  const saldo = Array.isArray(transactions) 
+    ? transactions.reduce((acc, item) => {
+        return acc + (item.type === 'income' ? item.amount : -item.amount)
+      }, 0)
+    : 0
 
-  const totalReceitas = transactions
-    .filter(t => t.type === 'income')
-    .reduce((acc, t) => acc + t.amount, 0)
+  const totalReceitas = Array.isArray(transactions)
+    ? transactions
+        .filter(t => t.type === 'income')
+        .reduce((acc, t) => acc + t.amount, 0)
+    : 0
 
-  const totalDespesas = transactions
-    .filter(t => t.type === 'expense')
-    .reduce((acc, t) => acc + t.amount, 0)
+  const totalDespesas = Array.isArray(transactions)
+    ? transactions
+        .filter(t => t.type === 'expense')
+        .reduce((acc, t) => acc + t.amount, 0)
+    : 0
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-2 sm:p-4">
-      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
-        
-        {/* Navegação */}
-        <Navigation />
+    <ProtectedRoute>
+      <div id="page-top" style={{ scrollMarginTop: 0 }}>
+        <UserHeader />
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-2 sm:p-4">
+          <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
+          
+          {/* Navegação */}
+          <Navigation />
         
         {/* Header Principal */}
         <div className="text-center py-6 sm:py-8 bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-700 dark:to-indigo-700 text-white rounded-lg shadow-lg">
@@ -102,7 +113,7 @@ export default function IAPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-lg sm:text-2xl font-bold">R$ {totalReceitas.toFixed(2)}</div>
-                  <p className="text-blue-100 text-xs">{transactions.filter(t => t.type === 'income').length} entradas</p>
+                  <p className="text-blue-100 text-xs">{Array.isArray(transactions) ? transactions.filter(t => t.type === 'income').length : 0} entradas</p>
                 </div>
                 <div className="text-xl sm:text-3xl">📈</div>
               </div>
@@ -118,7 +129,7 @@ export default function IAPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-lg sm:text-2xl font-bold">R$ {totalDespesas.toFixed(2)}</div>
-                  <p className="text-red-100 text-xs">{transactions.filter(t => t.type === 'expense').length} saídas</p>
+                  <p className="text-red-100 text-xs">{Array.isArray(transactions) ? transactions.filter(t => t.type === 'expense').length : 0} saídas</p>
                 </div>
                 <div className="text-xl sm:text-3xl">📉</div>
               </div>
@@ -215,7 +226,7 @@ export default function IAPage() {
                   </div>
                 </div>
                 <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                  📈 Total de {transactions.length} transações analisadas. {metas.length > 0 ? `${metas.length} metas ativas.` : 'Defina metas para melhor controle.'}
+                  📈 Total de {Array.isArray(transactions) ? transactions.length : 0} transações analisadas. {Array.isArray(metas) && metas.length > 0 ? `${metas.length} metas ativas.` : 'Defina metas para melhor controle.'}
                 </p>
               </div>
             </div>
@@ -245,5 +256,7 @@ export default function IAPage() {
         </div>
       </div>
     </div>
+    </div>
+    </ProtectedRoute>
   )
 }

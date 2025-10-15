@@ -57,7 +57,10 @@ export async function POST(request: NextRequest) {
       recurrenceCount,
     } = body;
 
-    const transactionDate = new Date(date);
+    // Corrigir timezone: se a data vem como "2025-10-14", adicionar horário para evitar conversão UTC
+    // Se já tiver horário (T), mantém como está
+    const dateStr = date.includes("T") ? date : date + "T12:00:00";
+    const transactionDate = new Date(dateStr);
     const installmentCount = installments ? Number(installments) : 1;
 
     // Se é parcelado, criar múltiplas transações
@@ -74,8 +77,9 @@ export async function POST(request: NextRequest) {
       // Função utilitária: manter o "mesmo dia" de referência, ajustando para o último dia disponível do mês
       const originalDay = transactionDate.getDate();
       const computeInstallmentDate = (base: Date, monthsToAdd: number) => {
-        // CORREÇÃO: A primeira parcela deve começar no próximo mês
-        const targetMonth = base.getMonth() + monthsToAdd + 1;
+        // A primeira parcela (monthsToAdd = 0) deve ser no mês atual
+        // As próximas parcelas vão para os meses seguintes
+        const targetMonth = base.getMonth() + monthsToAdd;
         const y = base.getFullYear();
         const m = targetMonth % 12;
         const yearOffset = Math.floor(targetMonth / 12);

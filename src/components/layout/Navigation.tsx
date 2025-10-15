@@ -40,6 +40,13 @@ export function Navigation() {
     }
   ]
 
+  const handleNavClick = () => {
+    // Força scroll para o topo ao clicar em qualquer link
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' })
+    }, 0)
+  }
+
   return (
     <Card className="mb-4 sm:mb-6 shadow-lg border-t-4 border-t-indigo-500">
       <div className="p-3 sm:p-4">
@@ -51,6 +58,8 @@ export function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={handleNavClick}
+                scroll={false}
                 className={`flex-1 p-3 sm:p-4 rounded-lg transition-all duration-200 text-center sm:text-left ${
                   isActive
                     ? 'bg-indigo-500 text-white shadow-lg transform scale-105'

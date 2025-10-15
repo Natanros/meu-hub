@@ -86,7 +86,20 @@ export function TransactionsList({ transactions, metas, showToast, onTransaction
           </div>
         ) : (
           <div className="space-y-3">
-            {transactions.slice(0, 10).map((transaction) => {
+            {[...transactions]
+              .sort((a, b) => {
+                // Primeiro ordena por data (mais recente primeiro)
+                const dateCompare = new Date(b.date).getTime() - new Date(a.date).getTime();
+                
+                // Se as datas são iguais, ordena por ID decrescente (mais recente primeiro)
+                if (dateCompare === 0) {
+                  return b.id - a.id;
+                }
+                
+                return dateCompare;
+              })
+              .slice(0, 10)
+              .map((transaction) => {
               const metaName = getMetaName(transaction.metaId)
               
               return (
