@@ -12,7 +12,7 @@ import { FinancialSummaryCards } from '@/components/features/financial/Financial
 import { TransactionsList } from '@/components/features/transactions/TransactionsList'
 import { useToast } from '@/hooks/useToast'
 import { InsightsDashboard } from '@/components/features/analytics/InsightsDashboard'
-import { WhisperVoiceInput } from '@/components/features/audio'
+// import { WhisperVoiceInput } from '@/components/features/audio' // Desabilitado temporariamente - muito grande para Vercel
 
 export default function Home() {
   const [currentTime, setCurrentTime] = useState<string>('')
@@ -109,7 +109,8 @@ export default function Home() {
           </div>
 
           {/* Card de Teste do Whisper */}
-          <Card className="shadow-xl">
+          {/* Whisper temporariamente desabilitado - muito grande para Vercel Serverless */}
+          {/* <Card className="shadow-xl">
             <CardHeader>
               <CardTitle>🎤 Teste de Voz (Whisper)</CardTitle>
             </CardHeader>
@@ -120,7 +121,7 @@ export default function Home() {
                 showToast={showToast}
               />
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Footer Informativo */}
           <div className="text-center py-6 text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg shadow">

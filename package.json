@@ -41,7 +41,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@huggingface/transformers": "^3.7.6",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

@@ -1,12 +1,14 @@
 {
   "framework": "nextjs",
   "buildCommand": "npm run vercel-build",
-  "installCommand": "npm install",
+  "installCommand": "npm install --omit=dev",
   "devCommand": "npm run dev",
   "outputDirectory": ".next",
   "functions": {
     "src/app/api/**/*.ts": {
-      "maxDuration": 30
+      "maxDuration": 30,
+      "memory": 1024,
+      "includeFiles": "node_modules/@prisma/**"
     }
   },
   "headers": [
