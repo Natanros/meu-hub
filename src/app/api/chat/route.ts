@@ -1,34 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-interface Transaction {
-  id: string;
-  type: "income" | "expense";
-  category: string;
-  amount: number;
-  description?: string;
-  date: string;
-  metaId?: string;
-}
-
-interface Meta {
-  id: string;
-  nome: string;
-  valor: number;
-}
-
-interface ChatMessage {
-  role: "user" | "assistant";
-  content: string;
-}
-
-interface ChatRequest {
-  messages: ChatMessage[];
-  transactionData?: {
-    transactions: Transaction[];
-    metas: Meta[];
-    saldo: number;
-  };
-}
+import { Transaction, Meta, ChatMessage, ChatRequest } from "@/types";
 
 // Simulação de IA Financeira (em produção seria integração com OpenAI/Claude)
 function generateFinancialAIResponse(
