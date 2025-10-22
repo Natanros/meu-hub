@@ -1,3 +1,98 @@
+<<<<<<< HEAD
+// src/hooks/useFinancialData.tsx
+"use client";
+
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useSession } from "next-auth/react";
+import { Transaction } from "@/types/transaction";
+import { Meta } from "@/types/meta";
+
+export interface FinancialSummary {
+  saldo: number;
+  totalReceitas: number;
+  totalDespesas: number;
+}
+
+export function useFinancialData() {
+  const { status } = useSession();
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [metas, setMetas] = useState<Meta[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchFinancialData = useCallback(async () => {
+    if (status !== "authenticated") {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const [transactionsResponse, metasResponse] = await Promise.all([
+        fetch("/api/transactions"),
+        fetch("/api/metas"),
+      ]);
+
+      if (transactionsResponse.ok) {
+        const transactionsData = await transactionsResponse.json();
+        setTransactions(transactionsData);
+      } else {
+        console.error("Falha ao buscar transações");
+        setTransactions([]);
+      }
+
+      if (metasResponse.ok) {
+        const metasData = await metasResponse.json();
+        setMetas(metasData);
+      } else {
+        console.error("Falha ao buscar metas");
+        setMetas([]);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar dados financeiros:", error);
+      setTransactions([]);
+      setMetas([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    fetchFinancialData();
+  }, [fetchFinancialData]);
+
+  const summary: FinancialSummary = useMemo(() => {
+    // Filtrar apenas transações do mês atual
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const currentMonthTransactions = transactions.filter((t) => {
+      const transactionDate = new Date(t.date);
+      return transactionDate >= firstDayOfMonth && transactionDate <= lastDayOfMonth;
+    });
+
+    const totalReceitas = currentMonthTransactions
+      .filter((t) => t.type === "income")
+      .reduce((acc, t) => acc + t.amount, 0);
+
+    const totalDespesas = currentMonthTransactions
+      .filter((t) => t.type === "expense")
+      .reduce((acc, t) => acc + t.amount, 0);
+
+    const saldo = totalReceitas - totalDespesas;
+
+    return { saldo, totalReceitas, totalDespesas };
+  }, [transactions]);
+
+  return {
+    transactions,
+    metas,
+    summary,
+    loading,
+    refreshData: fetchFinancialData,
+  };
+}
+=======
 // src/hooks/useFinancialData.tsx
 "use client";
 
@@ -87,3 +182,4 @@ export function useFinancialData() {
     refreshData: fetchFinancialData,
   };
 }
+>>>>>>> 0e0c660098934615f279dd59f7bb78e4b6549ea4
