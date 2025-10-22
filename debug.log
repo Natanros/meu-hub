@@ -1,0 +1,80 @@
+ ⚠ Port 3000 is in use, using available port 3001 instead.
+   ▲ Next.js 15.3.4 (Turbopack)
+   - Local:        http://localhost:3001
+   - Network:      http://10.0.0.182:3001
+
+ ✓ Starting...
+ ○ Compiling middleware ...
+ ✓ Compiled middleware in 503ms
+ ✓ Ready in 1771ms
+ ○ Compiling / ...
+ ✓ Compiled / in 3.5s
+(node:47779) Warning: `--localstorage-file` was provided without a valid path
+    at Object.get (node:internal/webstorage:32:25)
+    at /home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:274:210141
+    at DevOverlay (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:274:210349)
+    at react-stack-bottom-frame (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:240690)
+    at renderWithHooks (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:70854)
+    at renderElement (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:85582)
+    at retryNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:147220)
+    at renderNodeDestructive (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:146483)
+    at renderNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:156530)
+    at renderChildrenArray (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:153781)
+    at retryNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:147686)
+    at renderNodeDestructive (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:146483)
+    at renderElement (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:133543)
+    at retryNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:147220)
+    at renderNodeDestructive (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:146483)
+    at renderNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:156530)
+    at renderChildrenArray (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:153781)
+    at retryNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:147686)
+    at renderNodeDestructive (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:146483)
+    at renderElement (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:133543)
+    at retryNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:147220)
+    at renderNodeDestructive (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:146483)
+    at finishFunctionComponent (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:71864)
+    at renderElement (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:87063)
+    at retryNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:147220)
+    at renderNodeDestructive (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:146483)
+    at finishFunctionComponent (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:71864)
+    at renderElement (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:87063)
+    at retryNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:147220)
+    at renderNodeDestructive (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:146483)
+    at renderElement (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:139974)
+    at retryNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:147220)
+    at renderNodeDestructive (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:146483)
+    at renderElement (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:139974)
+    at retryNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:147220)
+    at renderNodeDestructive (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:146483)
+    at renderElement (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:139974)
+    at retryNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:147220)
+    at renderNodeDestructive (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:146483)
+    at renderElement (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:139974)
+    at retryNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:147220)
+    at renderNodeDestructive (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:146483)
+    at renderElement (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:139974)
+    at retryNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:147220)
+    at renderNodeDestructive (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:146483)
+    at renderElement (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:139974)
+    at retryNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:147220)
+    at renderNodeDestructive (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:146483)
+    at renderNode (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:156530)
+    at renderChildrenArray (/home/nataniel/IdeaProjects/meu-hub/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:150:153781)
+ ⨯ [TypeError: localStorage.getItem is not a function] {
+  digest: '3963101636'
+}
+[TypeError: localStorage.getItem is not a function]
+ ⨯ [TypeError: localStorage.getItem is not a function] { page: '/' }
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 1315ms
+[TypeError: localStorage.getItem is not a function]
+[TypeError: localStorage.getItem is not a function]
+ ⨯ [TypeError: localStorage.getItem is not a function]
+ ⨯ [TypeError: localStorage.getItem is not a function]
+[TypeError: localStorage.getItem is not a function]
+ ⨯ unhandledRejection: [TypeError: localStorage.getItem is not a function]
+ ⨯ unhandledRejection:  [TypeError: localStorage.getItem is not a function]
+[TypeError: localStorage.getItem is not a function]
+[TypeError: localStorage.getItem is not a function]
+ ⨯ [TypeError: localStorage.getItem is not a function]
+[TypeError: localStorage.getItem is not a function] { page: '/' }

@@ -1,9 +1,28 @@
 'use client'
 
 import { useTheme } from '@/contexts/ThemeContext'
+import { useState, useEffect } from 'react'
 
 export function ThemeToggleButton() {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Não renderizar até estar montado no cliente (evita SSR)
+  if (!mounted) {
+    return (
+      <div className="m-4 px-6 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 font-medium shadow-sm whitespace-nowrap" style={{ width: '150px', height: '48px' }} />
+    )
+  }
+
+  return <ThemeToggleButtonInner />
+}
+
+function ThemeToggleButtonInner() {
   const { theme, toggleTheme } = useTheme()
+
   return (
     <button
       onClick={toggleTheme}

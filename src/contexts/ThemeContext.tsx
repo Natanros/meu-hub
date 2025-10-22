@@ -13,8 +13,14 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>('light')
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
+    
+    // Verificar se está no cliente antes de acessar localStorage
+    if (typeof window === 'undefined') return
+    
     const savedTheme = localStorage.getItem('theme') as Theme | null
 
     if (savedTheme) {
@@ -30,8 +36,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light'
     setTheme(newTheme)
-    document.documentElement.classList.toggle('dark', newTheme === 'dark')
-    localStorage.setItem('theme', newTheme)
+    
+    if (typeof window !== 'undefined') {
+      document.documentElement.classList.toggle('dark', newTheme === 'dark')
+      localStorage.setItem('theme', newTheme)
+    }
+  }
+
+  // Não renderizar até estar montado no cliente para evitar problemas de hidratação
+  if (!mounted) {
+    return <>{children}</>
   }
 
   return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>

@@ -25,10 +25,12 @@ export const usePWA = (): PWACapabilities => {
     isIOS: false,
     isAndroid: false,
     supportsInstall: false,
-    viewportHeight: typeof window !== 'undefined' ? window.innerHeight : 0,
+    viewportHeight: 0,
   });
 
   useEffect(() => {
+    // Verificar se está no cliente
+    if (typeof window === 'undefined') return;
     const detectCapabilities = () => {
       // Detectar se está instalado como PWA
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;

@@ -23,8 +23,22 @@ const PWAInstallManager: React.FC = () => {
   const [isInstalled, setIsInstalled] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [iOSBannerDismissed, setIOSBannerDismissed] = useState(false);
 
   useEffect(() => {
+    // Verificar se está no cliente
+    if (typeof window === 'undefined') return;
+    
+    setMounted(true);
+    
+    // Verificar se o banner do iOS já foi dispensado nesta sessão
+    const dismissed = sessionStorage.getItem('ios-banner-dismissed');
+    if (dismissed === 'true') {
+      setIOSBannerDismissed(true);
+    }
+    
     // Verificar se já está instalado
     const checkIfInstalled = () => {
       const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches;
@@ -35,6 +49,9 @@ const PWAInstallManager: React.FC = () => {
     };
 
     checkIfInstalled();
+    
+    // Detectar iOS
+    setIsIOS(/iPad|iPhone|iPod/.test(navigator.userAgent));
 
     // Listener para evento de instalação
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -78,10 +95,15 @@ const PWAInstallManager: React.FC = () => {
 
   const dismissBanner = () => {
     setShowInstallBanner(false);
+    setIOSBannerDismissed(true);
+    // Salvar no sessionStorage para não mostrar novamente nesta sessão
+    sessionStorage.setItem('ios-banner-dismissed', 'true');
   };
 
-  // Detectar iOS
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  // Não renderizar até estar montado no cliente
+  if (!mounted) {
+    return null;
+  }
 
   // Se já está instalado, não mostrar nada
   if (isInstalled) {
@@ -89,7 +111,7 @@ const PWAInstallManager: React.FC = () => {
   }
 
   // Banner de instalação para iOS
-  if (isIOS && !isStandalone) {
+  if (isIOS && !isStandalone && !iOSBannerDismissed) {
     return (
       <Card className="fixed bottom-4 left-4 right-4 p-4 z-50 bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-xl mobile-card">
         <div className="flex items-start justify-between gap-3">

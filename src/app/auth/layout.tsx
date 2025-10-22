@@ -5,11 +5,14 @@
  */
 
 import { ReactNode } from 'react'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="auth-layout">
-      {children}
-    </div>
+    <ThemeProvider>
+      <div className="auth-layout">
+        {children}
+      </div>
+    </ThemeProvider>
   )
 }

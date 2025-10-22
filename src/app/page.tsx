@@ -12,6 +12,7 @@ import { FinancialSummaryCards } from '@/components/features/financial/Financial
 import { TransactionsList } from '@/components/features/transactions/TransactionsList'
 import { useToast } from '@/hooks/useToast'
 import { InsightsDashboard } from '@/components/features/analytics/InsightsDashboard'
+import { WhisperVoiceInput } from '@/components/features/audio'
 
 export default function Home() {
   const [currentTime, setCurrentTime] = useState<string>('')
@@ -106,6 +107,20 @@ export default function Home() {
               </Card>
             </div>
           </div>
+
+          {/* Card de Teste do Whisper */}
+          <Card className="shadow-xl">
+            <CardHeader>
+              <CardTitle>🎤 Teste de Voz (Whisper)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <WhisperVoiceInput
+                onTransactionAdded={refreshData}
+                metas={metas}
+                showToast={showToast}
+              />
+            </CardContent>
+          </Card>
 
           {/* Footer Informativo */}
           <div className="text-center py-6 text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg shadow">

@@ -1,0 +1,12 @@
+
+> meu-hub@0.1.0 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.3.4 (Turbopack)
+   - Local:        http://localhost:3001
+   - Network:      http://10.0.0.182:3001
+
+ ✓ Starting...
+ ✓ Compiled middleware in 234ms
+ ✓ Ready in 1432ms
+[?25h
