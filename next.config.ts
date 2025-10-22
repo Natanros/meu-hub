@@ -5,17 +5,15 @@ const nextConfig: NextConfig = {
   /* config options here */
   webpack: (config, { isServer }) => {
     if (isServer) {
-      // Excluir @huggingface/transformers do bundle do servidor (muito grande)
+      // Excluir @huggingface/transformers do bundle do servidor (muito grande - 200MB+)
       config.externals = config.externals || [];
-      config.externals.push({
-        "@huggingface/transformers": "@huggingface/transformers",
-      });
+      config.externals.push('@huggingface/transformers');
     }
     return config;
   },
   // Configuração experimental para reduzir tamanho de serverless functions
   experimental: {
-    serverComponentsExternalPackages: ["@huggingface/transformers"],
+    serverComponentsExternalPackages: ['@huggingface/transformers'],
   },
 };
 
