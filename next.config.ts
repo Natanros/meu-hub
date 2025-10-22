@@ -8,14 +8,14 @@ const nextConfig: NextConfig = {
       // Excluir @huggingface/transformers do bundle do servidor (muito grande)
       config.externals = config.externals || [];
       config.externals.push({
-        '@huggingface/transformers': '@huggingface/transformers',
+        "@huggingface/transformers": "@huggingface/transformers",
       });
     }
     return config;
   },
   // Configuração experimental para reduzir tamanho de serverless functions
   experimental: {
-    serverComponentsExternalPackages: ['@huggingface/transformers'],
+    serverComponentsExternalPackages: ["@huggingface/transformers"],
   },
 };
 
