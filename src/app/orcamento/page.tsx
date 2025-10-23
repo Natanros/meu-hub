@@ -6,7 +6,6 @@ import { BudgetManager } from '@/components/features/budgets/BudgetManager';
 import { Transaction } from '@/types/transaction';
 import { Loader2 } from 'lucide-react';
 import UserHeader from '@/components/layout/UserHeader';
-import { Navigation } from '@/components/layout/Navigation';
 import ProtectedRoute from '@/components/features/auth/ProtectedRoute';
 
 // Extrai categorias únicas das transações
@@ -68,7 +67,6 @@ export default function OrcamentoPage() {
         <div className="max-w-7xl mx-auto space-y-6">
           
           <UserHeader />
-          <Navigation />
           
           <div className="text-center py-8 sm:py-12 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-700 dark:to-pink-700 text-white rounded-lg shadow-xl">
             <h1 className="text-3xl sm:text-5xl font-bold mb-3">💰 Orçamentos</h1>

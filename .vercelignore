@@ -1,5 +1,0 @@
-node_modules/@huggingface
-prisma/migrations.bak
-*.log
-.env.local
-.DS_Store

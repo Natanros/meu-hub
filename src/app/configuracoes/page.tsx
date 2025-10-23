@@ -5,7 +5,6 @@ import { useSession, signOut } from 'next-auth/react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Navigation } from '@/components/layout/Navigation'
 import UserHeader from '@/components/layout/UserHeader'
 import ProtectedRoute from '@/components/features/auth/ProtectedRoute'
 import { useToast } from '@/hooks/useToast'
@@ -75,9 +74,6 @@ export default function ConfiguracoesPage() {
           
           {/* Header do Usuário */}
           <UserHeader />
-          
-          {/* Navegação */}
-          <Navigation />
           
           {/* Header Principal */}
           <div className="text-center py-8 sm:py-12 bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-700 dark:to-blue-700 text-white rounded-lg shadow-xl">

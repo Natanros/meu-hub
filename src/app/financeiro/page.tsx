@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useToast } from '@/hooks/useToast'
 import { TransactionForm } from '@/components/features/transactions/TransactionForm'
 import { TransactionsList } from '@/components/features/transactions/TransactionsList'
-import { Navigation } from '@/components/layout/Navigation'
 import UserHeader from '@/components/layout/UserHeader'
 import ProtectedRoute from '@/components/features/auth/ProtectedRoute'
 import { ExportControls } from '@/components/features/system/ExportControls'
@@ -30,7 +29,6 @@ export default function FinanceiroModerno() {
         <div className="max-w-7xl mx-auto space-y-6">
           
           <UserHeader />
-          <Navigation />
           
           <div className="text-center py-8 sm:py-12 bg-gradient-to-r from-green-600 to-blue-600 dark:from-green-700 dark:to-blue-700 text-white rounded-lg shadow-xl">
             <h1 className="text-3xl sm:text-5xl font-bold mb-3">💰 Centro Financeiro</h1>

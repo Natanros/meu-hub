@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Transaction } from '@/types/transaction'
 import { Meta } from '@/types/meta'
-import { Navigation } from '@/components/layout/Navigation'
 import UserHeader from '@/components/layout/UserHeader'
 import ProtectedRoute from '@/components/features/auth/ProtectedRoute'
 import ReportsManager from '@/components/features/reports/ReportsManager'
@@ -54,7 +53,6 @@ export default function AnalyticsPage() {
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-2 sm:p-4">
           <div className="max-w-7xl mx-auto space-y-6">
             <UserHeader />
-            <Navigation />
             <div className="flex items-center justify-center h-64">
               <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
               <span className="ml-3 text-gray-600 dark:text-gray-400">Carregando dados...</span>
@@ -71,7 +69,6 @@ export default function AnalyticsPage() {
         <div className="max-w-7xl mx-auto space-y-6">
           
           <UserHeader />
-          <Navigation />
           
           <div className="text-center py-8 sm:py-12 bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-700 dark:to-blue-700 text-white rounded-lg shadow-xl">
             <h1 className="text-3xl sm:text-5xl font-bold mb-3">📊 Analytics & Relatórios</h1>

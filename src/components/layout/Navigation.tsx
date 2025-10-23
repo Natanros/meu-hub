@@ -27,9 +27,9 @@ export function Navigation() {
       description: 'Relatórios e Alertas'
     },
     {
-      href: '/ia',
-      label: 'IA',
-      icon: '🤖',
+      href: '/insights',
+      label: 'Insights',
+      icon: '💡',
       description: 'Análises Inteligentes'
     },
     {

@@ -8,7 +8,6 @@ import { AIAnalysis } from '@/components/features/analytics/AIAnalysis'
 import { NotificationCenter } from '@/components/features/notifications/NotificationCenter'
 import { AdvancedDashboard } from '@/components/features/analytics/AdvancedDashboard'
 import { useNotifications } from '@/hooks/useNotifications'
-import { Navigation } from '@/components/layout/Navigation'
 import UserHeader from '@/components/layout/UserHeader'
 import ProtectedRoute from '@/components/features/auth/ProtectedRoute'
 
@@ -76,9 +75,6 @@ export default function IAPage() {
         <UserHeader />
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-2 sm:p-4">
           <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
-          
-          {/* Navegação */}
-          <Navigation />
         
         {/* Header Principal */}
         <div className="text-center py-6 sm:py-8 bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-700 dark:to-indigo-700 text-white rounded-lg shadow-lg">
