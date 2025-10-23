@@ -9,12 +9,14 @@ Proporcionar uma plataforma integrada para controle financeiro pessoal, permitin
 ## ✨ Funcionalidades Principais
 
 ### 📊 **Dashboard**
+
 - Visão geral das finanças em tempo real
 - Cartões de resumo com saldo, receitas e despesas
 - Transações recentes
 - Insights financeiros automáticos
 
 ### 💸 **Centro Financeiro**
+
 - Cadastro de transações (receitas e despesas)
 - Entrada por voz com processamento inteligente
 - Transações parceladas e recorrentes
@@ -24,18 +26,21 @@ Proporcionar uma plataforma integrada para controle financeiro pessoal, permitin
 - Dashboard de pagamentos futuros
 
 ### 🎯 **Orçamentos**
+
 - Definição de limites por categoria
 - Acompanhamento em tempo real
 - Alertas de gastos excessivos
 - Visualização de progresso
 
 ### 🏁 **Metas Financeiras**
+
 - Criação de objetivos financeiros
 - Vinculação de transações às metas
 - Cálculo automático de progresso
 - Estatísticas de metas atingidas
 
 ### 📈 **Analytics & Relatórios**
+
 - Gráficos interativos (barras, linha, pizza)
 - Análises por período (mensal, semanal, anual)
 - Relatórios personalizados
@@ -43,6 +48,7 @@ Proporcionar uma plataforma integrada para controle financeiro pessoal, permitin
 - Backup e exportação de dados
 
 ### 💡 **Insights & Assistente**
+
 - Análise automática de padrões financeiros
 - Chat assistente para consultas
 - Recomendações personalizadas
@@ -50,6 +56,7 @@ Proporcionar uma plataforma integrada para controle financeiro pessoal, permitin
 - Dashboard analítico avançado
 
 ### ⚙️ **Configurações**
+
 - Gerenciamento de perfil
 - Segurança da conta
 - Preferências do sistema
@@ -57,51 +64,60 @@ Proporcionar uma plataforma integrada para controle financeiro pessoal, permitin
 ## 🛠️ Tecnologias
 
 ### **Frontend**
+
 - **Next.js 15** - Framework React com SSR
 - **TypeScript** - Tipagem estática
 - **Tailwind CSS v4** - Estilização moderna
 - **shadcn/ui** - Componentes UI
 
 ### **Backend**
+
 - **Next.js API Routes** - Endpoints serverless
 - **Prisma ORM** - Gerenciamento de banco de dados
 - **PostgreSQL** - Banco de dados relacional
 
 ### **Autenticação**
+
 - **NextAuth.js v5** - Autenticação completa
 - Login com Google OAuth
 - Login com email/senha
 
 ### **Deploy**
+
 - **Vercel** - Hospedagem e CI/CD
 - **Edge Runtime** - Performance otimizada
 
 ## 🚀 Como Executar
 
 ### Pré-requisitos
-- Node.js 18+ 
+
+- Node.js 18+
 - PostgreSQL (ou URL de conexão)
 - npm ou yarn
 
 ### Instalação
 
 1. **Clone o repositório**
+
 ```bash
 git clone https://github.com/Natanros/meu-hub.git
 cd meu-hub
 ```
 
 2. **Instale as dependências**
+
 ```bash
 npm install
 ```
 
 3. **Configure as variáveis de ambiente**
+
 ```bash
 cp .env.example .env
 ```
 
 Edite o arquivo `.env` com suas credenciais:
+
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/meuhub"
 NEXTAUTH_URL="http://localhost:3000"
@@ -111,16 +127,19 @@ GOOGLE_CLIENT_SECRET="seu-client-secret"
 ```
 
 4. **Execute as migrações do banco**
+
 ```bash
 npx prisma migrate dev
 ```
 
 5. **Inicie o servidor de desenvolvimento**
+
 ```bash
 npm run dev
 ```
 
 6. **Acesse a aplicação**
+
 ```
 http://localhost:3000
 ```
@@ -138,6 +157,7 @@ npx prisma studio    # Abre interface visual do banco
 ## 🗄️ Estrutura do Banco de Dados
 
 ### **Principais Modelos**
+
 - `User` - Usuários e autenticação
 - `Transaction` - Transações financeiras
 - `Meta` - Metas financeiras
@@ -194,15 +214,5 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 ## 👨‍💻 Autor
 
 **Nataniel**
+
 - GitHub: [@Natanros](https://github.com/Natanros)
-
-## 🙏 Agradecimentos
-
-- shadcn/ui pelos componentes
-- Vercel pela hospedagem
-- Prisma pela excelente ORM
-- Comunidade Next.js
-
----
-
-**⚡ Desenvolvido com Next.js, TypeScript e muito ☕**
