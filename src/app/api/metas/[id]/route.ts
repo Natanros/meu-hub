@@ -5,7 +5,7 @@ import { prisma } from "../../../../lib/prisma";
 // GET - Buscar uma meta específica
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getAuthenticatedUser(request);
@@ -14,15 +14,20 @@ export async function GET(
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
 
+    const { id } = await params;
+
     const meta = await prisma.meta.findFirst({
       where: {
-        id: params.id,
+        id,
         userId: user.id,
       },
     });
 
     if (!meta) {
-      return NextResponse.json({ error: "Meta não encontrada" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Meta não encontrada" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(meta);
@@ -35,7 +40,7 @@ export async function GET(
 // PUT - Atualizar uma meta
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getAuthenticatedUser(request);
@@ -44,6 +49,7 @@ export async function PUT(
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
     const { nome, valor } = body;
 
@@ -57,18 +63,21 @@ export async function PUT(
     // Verificar se a meta existe e pertence ao usuário
     const metaExistente = await prisma.meta.findFirst({
       where: {
-        id: params.id,
+        id,
         userId: user.id,
       },
     });
 
     if (!metaExistente) {
-      return NextResponse.json({ error: "Meta não encontrada" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Meta não encontrada" },
+        { status: 404 }
+      );
     }
 
     // Atualizar a meta
     const meta = await prisma.meta.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         nome,
         valor: Number(valor),
@@ -85,7 +94,7 @@ export async function PUT(
 // DELETE - Deletar uma meta
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getAuthenticatedUser(request);
@@ -94,24 +103,32 @@ export async function DELETE(
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
 
+    const { id } = await params;
+
     // Verificar se a meta existe e pertence ao usuário
     const metaExistente = await prisma.meta.findFirst({
       where: {
-        id: params.id,
+        id,
         userId: user.id,
       },
     });
 
     if (!metaExistente) {
-      return NextResponse.json({ error: "Meta não encontrada" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Meta não encontrada" },
+        { status: 404 }
+      );
     }
 
     // Deletar a meta
     await prisma.meta.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
-    return NextResponse.json({ success: true, message: "Meta deletada com sucesso" });
+    return NextResponse.json({
+      success: true,
+      message: "Meta deletada com sucesso",
+    });
   } catch (error) {
     console.error("Erro ao deletar meta:", error);
     return NextResponse.json({ error: "Erro interno" }, { status: 500 });
