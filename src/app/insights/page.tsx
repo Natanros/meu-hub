@@ -71,10 +71,10 @@ export default function IAPage() {
 
   return (
     <ProtectedRoute>
-      <div id="page-top" style={{ scrollMarginTop: 0 }}>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-2 sm:p-4">
+        <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
+        
         <UserHeader />
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-2 sm:p-4">
-          <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
         
         {/* Header Principal */}
         <div className="text-center py-6 sm:py-8 bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-700 dark:to-indigo-700 text-white rounded-lg shadow-lg">
@@ -251,8 +251,7 @@ export default function IAPage() {
           </p>
         </div>
       </div>
-    </div>
-    </div>
+      </div>
     </ProtectedRoute>
   )
 }
