@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Navigation } from '@/components/layout/Navigation'
 import UserHeader from '@/components/layout/UserHeader'
 import ProtectedRoute from '@/components/features/auth/ProtectedRoute'
 import Link from 'next/link'
@@ -45,16 +44,15 @@ export default function Home() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-2 sm:p-4">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="max-w-7xl mx-auto space-y-6">
           
           <UserHeader />
-          <Navigation />
           
           <div className="text-center py-8 sm:py-12 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-700 dark:to-purple-700 text-white rounded-lg shadow-xl">
-            <h1 className="text-3xl sm:text-5xl font-bold mb-3">🏠 Meu Hub Pessoal</h1>
+            <h1 className="text-3xl sm:text-5xl font-bold mb-3">🏠 Dashboard</h1>
             <p className="text-lg sm:text-xl text-blue-100 dark:text-blue-200 mb-4">
-              {greeting}! Bem-vindo ao seu centro de controle pessoal.
+              {greeting}! Visão geral das suas finanças.
             </p>
             <div className="text-sm text-blue-200 dark:text-blue-300">
               {currentTime}
@@ -91,17 +89,23 @@ export default function Home() {
             <div className="space-y-6">
               <Card className="shadow-xl">
                 <CardHeader>
-                  <CardTitle>⚡ Ações Rápidas</CardTitle>
+                  <CardTitle>⚡ Acesso Rápido</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-3">
                   <Link href="/financeiro">
-                    <Button className="w-full">💰 Adicionar Transação</Button>
-                  </Link>
-                  <Link href="/achievements">
-                    <Button variant="outline" className="w-full">🏆 Ver Conquistas</Button>
+                    <Button className="w-full">💰 Nova Transação</Button>
                   </Link>
                   <Link href="/orcamento">
-                     <Button variant="outline" className="w-full">📊 Gerenciar Orçamento</Button>
+                     <Button variant="outline" className="w-full">� Gerenciar Orçamento</Button>
+                  </Link>
+                  <Link href="/analytics">
+                    <Button variant="outline" className="w-full">📊 Ver Relatórios</Button>
+                  </Link>
+                  <Link href="/achievements">
+                    <Button variant="outline" className="w-full">🏆 Conquistas</Button>
+                  </Link>
+                  <Link href="/ia">
+                    <Button variant="outline" className="w-full">🤖 Análise com IA</Button>
                   </Link>
                 </CardContent>
               </Card>
