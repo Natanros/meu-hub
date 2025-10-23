@@ -1,6 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
 import { getAuthenticatedUser } from "../../../lib/auth-helper";
-import { checkAndAwardAchievements } from "../../../lib/achievementService";
 import { prisma } from "../../../lib/prisma";
 
 // GET → Listar todas do usuário logado
@@ -123,17 +122,11 @@ export async function POST(request: NextRequest) {
         `🎉 Todas as ${installmentCount} parcelas criadas com sucesso!`
       );
 
-      const newAchievements = await checkAndAwardAchievements({
-        userId: user.id,
-        type: "TRANSACTION_CREATED",
-      });
-
       return NextResponse.json({
         success: true,
         message: `${installmentCount} parcelas criadas`,
         transactions,
         totalAmount: amount,
-        newAchievements,
       });
     } else {
       // Transação única (não parcelada)
@@ -154,15 +147,7 @@ export async function POST(request: NextRequest) {
 
       console.log("✅ Transação única criada:", transaction.id);
 
-      const newAchievements = await checkAndAwardAchievements({
-        userId: user.id,
-        type: "TRANSACTION_CREATED",
-      });
-
-      return NextResponse.json({
-        ...transaction,
-        newAchievements,
-      });
+      return NextResponse.json(transaction);
     }
   } catch (error) {
     console.error("Erro ao criar transação:", error);

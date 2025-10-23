@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser } from "../../../lib/auth-helper";
-import { checkAndAwardAchievements } from "../../../lib/achievementService";
 import { prisma } from "../../../lib/prisma";
 
 export async function GET(request: NextRequest) {
@@ -62,15 +61,7 @@ export async function POST(request: NextRequest) {
 
     console.log("✅ Meta criada:", meta.id);
 
-    const newAchievements = await checkAndAwardAchievements({
-      userId: user.id,
-      type: "GOAL_CREATED",
-    });
-
-    return NextResponse.json({
-      ...meta,
-      newAchievements,
-    });
+    return NextResponse.json(meta);
   } catch (error) {
     console.error("Erro ao criar meta:", error);
     return NextResponse.json({ error: "Erro interno" }, { status: 500 });

@@ -24,7 +24,6 @@ model User {
   transactions Transaction[]
   metas        Meta[]
   budgets      Budget[]
-  achievements UserAchievement[]
 
   @@map("users")
 }
@@ -47,32 +46,6 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
-}
-
-// Modelo para definir todas as conquistas possíveis no sistema
-model Achievement {
-  id          String   @id @default(cuid())
-  key         String   @unique // Ex: 'BUDGET_MASTER', 'STREAK_7_DAYS'
-  name        String
-  description String
-  icon        String // Emoji ou nome do ícone
-  createdAt   DateTime @default(now())
-
-  // Relacionamento com os usuários que a desbloquearam
-  unlockedBy UserAchievement[]
-}
-
-// Tabela de junção para registrar as conquistas desbloqueadas por cada usuário
-model UserAchievement {
-  id            String   @id @default(cuid())
-  userId        String
-  achievementId String
-  unlockedAt    DateTime @default(now())
-
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, achievementId])
 }
 
 model Session {

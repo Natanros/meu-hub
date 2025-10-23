@@ -100,13 +100,6 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
 
       const result = await response.json();
 
-      // Verifica se novas conquistas foram desbloqueadas e mostra um toast
-      if (result.newAchievements && Array.isArray(result.newAchievements)) {
-        result.newAchievements.forEach((ach: { name: string }) => {
-          showToast(`🏆 Conquista Desbloqueada: ${ach.name}!`, "success");
-        });
-      }
-
       if (result.success) {
         // Transação parcelada
         showToast(result.message, "success");

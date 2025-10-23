@@ -100,9 +100,6 @@ export default function Home() {
                   <Link href="/analytics">
                     <Button variant="outline" className="w-full">📊 Ver Relatórios</Button>
                   </Link>
-                  <Link href="/achievements">
-                    <Button variant="outline" className="w-full">🏆 Conquistas</Button>
-                  </Link>
                   <Link href="/insights">
                     <Button variant="outline" className="w-full">💡 Insights & Assistente</Button>
                   </Link>
