@@ -82,8 +82,8 @@ export default function IAPage() {
         
         {/* Header Principal */}
         <div className="text-center py-6 sm:py-8 bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-700 dark:to-indigo-700 text-white rounded-lg shadow-lg">
-          <h1 className="text-2xl sm:text-4xl font-bold mb-2">🤖 Inteligência Artificial</h1>
-          <p className="text-sm sm:text-base text-purple-100 dark:text-purple-200">Análises inteligentes e chat com IA</p>
+          <h1 className="text-2xl sm:text-4xl font-bold mb-2">💡 Insights & Assistente</h1>
+          <p className="text-sm sm:text-base text-purple-100 dark:text-purple-200">Análises inteligentes e assistente virtual</p>
         </div>
 
         {/* Cards de Resumo Financeiro para IA */}

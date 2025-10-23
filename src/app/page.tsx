@@ -104,8 +104,8 @@ export default function Home() {
                   <Link href="/achievements">
                     <Button variant="outline" className="w-full">🏆 Conquistas</Button>
                   </Link>
-                  <Link href="/ia">
-                    <Button variant="outline" className="w-full">🤖 Análise com IA</Button>
+                  <Link href="/insights">
+                    <Button variant="outline" className="w-full">💡 Insights & Assistente</Button>
                   </Link>
                 </CardContent>
               </Card>

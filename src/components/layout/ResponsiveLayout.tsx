@@ -87,10 +87,11 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
   const navigationItems = [
     { href: '/', icon: '🏠', label: 'Dashboard' },
     { href: '/financeiro', icon: '💰', label: 'Financeiro' },
-    { href: '/orcamento', icon: '�', label: 'Orçamento' },
+    { href: '/orcamento', icon: '🎯', label: 'Orçamento' },
+    { href: '/metas', icon: '🏁', label: 'Metas' },
     { href: '/analytics', icon: '📊', label: 'Analytics' },
     { href: '/achievements', icon: '🏆', label: 'Conquistas' },
-    { href: '/ia', icon: '🤖', label: 'IA' },
+    { href: '/insights', icon: '💡', label: 'Insights' },
     { href: '/configuracoes', icon: '⚙️', label: 'Configurações' },
   ];
 
