@@ -112,9 +112,6 @@ export default function Home() {
           <div className="text-center py-6 text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg shadow">
             <div className="space-y-2">
               <p className="text-sm font-medium">Sistema de Gestão Pessoal</p>
-              <p className="text-xs">
-                Desenvolvido com ❤️ usando Next.js, TypeScript, Tailwind CSS e IA
-              </p>
               <div className="flex justify-center gap-4 text-xs">
                 <span>💾 Dados seguros</span>
                 <span>🔄 Atualizações automáticas</span>
