@@ -12,7 +12,6 @@ import { usePathname } from 'next/navigation';
 import { ThemeToggleButton } from '@/components/shared/ThemeToggleButton';
 import { Button } from '@/components/ui/button';
 import { usePWA, useMobileOptimizations } from '@/hooks/usePWA';
-import FloatingActionButton from '@/components/shared/FloatingActionButton';
 
 interface ResponsiveLayoutProps {
   children: React.ReactNode;
@@ -226,9 +225,6 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
         >
           {children}
         </div>
-        
-        {/* Floating Action Button para mobile - Só mostra se autenticado */}
-        {isAuthenticated && <FloatingActionButton />}
       </main>
     </div>
   );
