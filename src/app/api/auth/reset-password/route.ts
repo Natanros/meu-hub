@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { sendPasswordChangedEmail } from '@/lib/emailService';
-import bcryptjs from 'bcryptjs';
-import crypto from 'crypto';
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { sendPasswordChangedEmail } from "@/lib/emailService";
+import bcryptjs from "bcryptjs";
+import crypto from "crypto";
 
 export async function POST(request: Request) {
   try {
@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
     if (!token || !newPassword) {
       return NextResponse.json(
-        { error: 'Token e nova senha são obrigatórios' },
+        { error: "Token e nova senha são obrigatórios" },
         { status: 400 }
       );
     }
@@ -18,13 +18,13 @@ export async function POST(request: Request) {
     // Validar senha
     if (newPassword.length < 6) {
       return NextResponse.json(
-        { error: 'A senha deve ter no mínimo 6 caracteres' },
+        { error: "A senha deve ter no mínimo 6 caracteres" },
         { status: 400 }
       );
     }
 
     // Hashear o token recebido para comparar com o banco
-    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     // Buscar token no banco
     const passwordResetToken = await prisma.passwordResetToken.findUnique({
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
     if (!passwordResetToken) {
       return NextResponse.json(
-        { error: 'Token inválido ou expirado' },
+        { error: "Token inválido ou expirado" },
         { status: 400 }
       );
     }
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       });
 
       return NextResponse.json(
-        { error: 'Token expirado. Solicite uma nova recuperação de senha.' },
+        { error: "Token expirado. Solicite uma nova recuperação de senha." },
         { status: 400 }
       );
     }
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
 
     if (!user) {
       return NextResponse.json(
-        { error: 'Usuário não encontrado' },
+        { error: "Usuário não encontrado" },
         { status: 404 }
       );
     }
@@ -86,12 +86,12 @@ export async function POST(request: Request) {
     await sendPasswordChangedEmail(user.email);
 
     return NextResponse.json({
-      message: 'Senha alterada com sucesso! Você já pode fazer login.',
+      message: "Senha alterada com sucesso! Você já pode fazer login.",
     });
   } catch (error) {
-    console.error('Erro ao redefinir senha:', error);
+    console.error("Erro ao redefinir senha:", error);
     return NextResponse.json(
-      { error: 'Erro ao processar solicitação' },
+      { error: "Erro ao processar solicitação" },
       { status: 500 }
     );
   }

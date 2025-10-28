@@ -15,21 +15,21 @@ interface EmailOptions {
  */
 async function sendWithResend(options: EmailOptions): Promise<boolean> {
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
-  
+
   if (!RESEND_API_KEY) {
-    console.error('❌ RESEND_API_KEY não configurada');
+    console.error("❌ RESEND_API_KEY não configurada");
     return false;
   }
 
   try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: process.env.EMAIL_FROM || 'Meu Hub <noreply@meuhub.com>',
+        from: process.env.EMAIL_FROM || "Meu Hub <noreply@meuhub.com>",
         to: options.to,
         subject: options.subject,
         html: options.html,
@@ -39,14 +39,14 @@ async function sendWithResend(options: EmailOptions): Promise<boolean> {
 
     if (!response.ok) {
       const error = await response.json();
-      console.error('❌ Erro ao enviar email com Resend:', error);
+      console.error("❌ Erro ao enviar email com Resend:", error);
       return false;
     }
 
-    console.log('✅ Email enviado com sucesso via Resend');
+    console.log("✅ Email enviado com sucesso via Resend");
     return true;
   } catch (error) {
-    console.error('❌ Erro ao enviar email com Resend:', error);
+    console.error("❌ Erro ao enviar email com Resend:", error);
     return false;
   }
 }
@@ -59,9 +59,11 @@ async function sendWithResend(options: EmailOptions): Promise<boolean> {
 async function sendWithNodemailer(_options: EmailOptions): Promise<boolean> {
   // Para usar Nodemailer, descomente as linhas abaixo e instale: npm install nodemailer
   // const nodemailer = require('nodemailer');
-  
-  console.warn('⚠️ Nodemailer não está configurado. Configure RESEND_API_KEY ou implemente Nodemailer.');
-  
+
+  console.warn(
+    "⚠️ Nodemailer não está configurado. Configure RESEND_API_KEY ou implemente Nodemailer."
+  );
+
   // Exemplo de configuração Nodemailer (descomente para usar):
   /*
   try {
@@ -90,7 +92,7 @@ async function sendWithNodemailer(_options: EmailOptions): Promise<boolean> {
     return false;
   }
   */
-  
+
   return false;
 }
 
@@ -101,8 +103,10 @@ export async function sendPasswordResetEmail(
   email: string,
   resetToken: string
 ): Promise<boolean> {
-  const resetUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/reset-password?token=${resetToken}`;
-  
+  const resetUrl = `${
+    process.env.NEXTAUTH_URL || "http://localhost:3000"
+  }/auth/reset-password?token=${resetToken}`;
+
   const html = `
 <!DOCTYPE html>
 <html>
@@ -181,14 +185,14 @@ Se você não solicitou esta recuperação, ignore este email.
   if (process.env.RESEND_API_KEY) {
     return await sendWithResend({
       to: email,
-      subject: '🔐 Recuperação de Senha - Meu Hub',
+      subject: "🔐 Recuperação de Senha - Meu Hub",
       html,
       text,
     });
   } else {
     return await sendWithNodemailer({
       to: email,
-      subject: '🔐 Recuperação de Senha - Meu Hub',
+      subject: "🔐 Recuperação de Senha - Meu Hub",
       html,
       text,
     });
@@ -198,7 +202,9 @@ Se você não solicitou esta recuperação, ignore este email.
 /**
  * Envia email de confirmação de alteração de senha
  */
-export async function sendPasswordChangedEmail(email: string): Promise<boolean> {
+export async function sendPasswordChangedEmail(
+  email: string
+): Promise<boolean> {
   const html = `
 <!DOCTYPE html>
 <html>
@@ -218,7 +224,7 @@ export async function sendPasswordChangedEmail(email: string): Promise<boolean> 
     
     <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0; border-radius: 5px;">
       <p style="margin: 0; font-size: 14px;">
-        ✅ Sua senha foi atualizada em ${new Date().toLocaleString('pt-BR')}
+        ✅ Sua senha foi atualizada em ${new Date().toLocaleString("pt-BR")}
       </p>
     </div>
     
@@ -239,7 +245,7 @@ export async function sendPasswordChangedEmail(email: string): Promise<boolean> 
   const text = `
 Senha Alterada - Meu Hub
 
-Sua senha foi alterada com sucesso em ${new Date().toLocaleString('pt-BR')}.
+Sua senha foi alterada com sucesso em ${new Date().toLocaleString("pt-BR")}.
 
 Se você não realizou esta alteração, entre em contato com o suporte imediatamente.
 
@@ -249,14 +255,14 @@ Se você não realizou esta alteração, entre em contato com o suporte imediata
   if (process.env.RESEND_API_KEY) {
     return await sendWithResend({
       to: email,
-      subject: '✅ Senha Alterada - Meu Hub',
+      subject: "✅ Senha Alterada - Meu Hub",
       html,
       text,
     });
   } else {
     return await sendWithNodemailer({
       to: email,
-      subject: '✅ Senha Alterada - Meu Hub',
+      subject: "✅ Senha Alterada - Meu Hub",
       html,
       text,
     });

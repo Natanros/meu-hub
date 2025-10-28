@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { sendPasswordChangedEmail } from '@/lib/emailService';
-import { getAuthenticatedUser } from '@/lib/auth-helper';
-import bcryptjs from 'bcryptjs';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { sendPasswordChangedEmail } from "@/lib/emailService";
+import { getAuthenticatedUser } from "@/lib/auth-helper";
+import bcryptjs from "bcryptjs";
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,17 +10,14 @@ export async function POST(request: NextRequest) {
     const user = await getAuthenticatedUser(request);
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'Não autenticado' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
     }
 
     const { currentPassword, newPassword } = await request.json();
 
     if (!currentPassword || !newPassword) {
       return NextResponse.json(
-        { error: 'Senha atual e nova senha são obrigatórias' },
+        { error: "Senha atual e nova senha são obrigatórias" },
         { status: 400 }
       );
     }
@@ -28,7 +25,7 @@ export async function POST(request: NextRequest) {
     // Validar nova senha
     if (newPassword.length < 6) {
       return NextResponse.json(
-        { error: 'A nova senha deve ter no mínimo 6 caracteres' },
+        { error: "A nova senha deve ter no mínimo 6 caracteres" },
         { status: 400 }
       );
     }
@@ -40,7 +37,7 @@ export async function POST(request: NextRequest) {
 
     if (!fullUser) {
       return NextResponse.json(
-        { error: 'Usuário não encontrado' },
+        { error: "Usuário não encontrado" },
         { status: 404 }
       );
     }
@@ -48,7 +45,7 @@ export async function POST(request: NextRequest) {
     // Verificar se o usuário tem senha (pode ter sido cadastrado via OAuth)
     if (!fullUser.password) {
       return NextResponse.json(
-        { error: 'Esta conta foi criada via login social e não possui senha' },
+        { error: "Esta conta foi criada via login social e não possui senha" },
         { status: 400 }
       );
     }
@@ -61,16 +58,19 @@ export async function POST(request: NextRequest) {
 
     if (!isPasswordValid) {
       return NextResponse.json(
-        { error: 'Senha atual incorreta' },
+        { error: "Senha atual incorreta" },
         { status: 400 }
       );
     }
 
     // Verificar se a nova senha é diferente da atual
-    const isSamePassword = await bcryptjs.compare(newPassword, fullUser.password);
+    const isSamePassword = await bcryptjs.compare(
+      newPassword,
+      fullUser.password
+    );
     if (isSamePassword) {
       return NextResponse.json(
-        { error: 'A nova senha deve ser diferente da senha atual' },
+        { error: "A nova senha deve ser diferente da senha atual" },
         { status: 400 }
       );
     }
@@ -88,12 +88,12 @@ export async function POST(request: NextRequest) {
     await sendPasswordChangedEmail(fullUser.email);
 
     return NextResponse.json({
-      message: 'Senha alterada com sucesso!',
+      message: "Senha alterada com sucesso!",
     });
   } catch (error) {
-    console.error('Erro ao alterar senha:', error);
+    console.error("Erro ao alterar senha:", error);
     return NextResponse.json(
-      { error: 'Erro ao processar solicitação' },
+      { error: "Erro ao processar solicitação" },
       { status: 500 }
     );
   }
