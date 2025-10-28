@@ -125,36 +125,30 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
       {isAuthenticated && (
         <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-card border-b border-border h-14 flex items-center justify-between px-4">
           <h1 className="font-bold text-lg">Meu Hub</h1>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleMobileMenu}
-            className="p-2 touch-target"
-            aria-label="Menu"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          {/* Só mostra o botão se o menu NÃO estiver aberto */}
+          {!isMobileMenuOpen && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleMobileMenu}
+              className="p-2 touch-target"
+              aria-label="Menu"
             >
-              {isMobileMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
                   d="M4 6h16M4 12h16M4 18h16"
                 />
-              )}
-            </svg>
-          </Button>
+              </svg>
+            </Button>
+          )}
         </div>
       )}
 
