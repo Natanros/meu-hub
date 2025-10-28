@@ -10,6 +10,7 @@ import ProtectedRoute from '@/components/features/auth/ProtectedRoute'
 import ReportsManager from '@/components/features/reports/ReportsManager'
 import AlertsManager from '@/components/features/notifications/AlertsManager'
 import BackupManager from '@/components/features/system/BackupManager'
+import CategoryChart from '@/components/features/analytics/CategoryChart'
 
 export default function AnalyticsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -161,8 +162,12 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Tabs principais */}
-        <Tabs defaultValue="reports" className="space-y-4 sm:space-y-6">
-          <TabsList className="grid w-full grid-cols-3 h-auto">
+        <Tabs defaultValue="charts" className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-4 h-auto">
+            <TabsTrigger value="charts" className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm py-2">
+              <span>📊</span>
+              <span className="hidden xs:inline">Gráficos</span>
+            </TabsTrigger>
             <TabsTrigger value="reports" className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm py-2">
               <span>📄</span>
               <span className="hidden xs:inline">Relatórios</span>
@@ -176,6 +181,10 @@ export default function AnalyticsPage() {
               <span className="hidden xs:inline">Backup</span>
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="charts" className="space-y-4 sm:space-y-6">
+            <CategoryChart transactions={transactions} />
+          </TabsContent>
 
           <TabsContent value="reports" className="space-y-4 sm:space-y-6">
             <ReportsManager transactions={transactions} metas={metas} />

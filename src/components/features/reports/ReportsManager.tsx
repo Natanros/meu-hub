@@ -26,8 +26,8 @@ const ReportsManager: React.FC<ReportsManagerProps> = ({ transactions, metas }) 
     },
     incluirGraficos: true,
     incluirMetas: true,
-    incluirInsights: true,
-    incluirProjecoes: true,
+    incluirInsights: false,
+    incluirProjecoes: false,
     formato: 'executivo'
   });
   
@@ -288,25 +288,10 @@ const ReportsManager: React.FC<ReportsManagerProps> = ({ transactions, metas }) 
                   />
                   <span className="text-sm text-gray-700 dark:text-gray-300">🎯 Metas</span>
                 </label>
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={config.incluirInsights}
-                    onChange={(e) => setConfig({ ...config, incluirInsights: e.target.checked })}
-                    className="rounded"
-                  />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">🧠 Insights</span>
-                </label>
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={config.incluirProjecoes}
-                    onChange={(e) => setConfig({ ...config, incluirProjecoes: e.target.checked })}
-                    className="rounded"
-                  />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">🔮 Projeções</span>
-                </label>
               </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                💡 O relatório incluirá estatísticas detalhadas das transações e categorias
+              </p>
             </div>
 
             {/* Botão Gerar */}
