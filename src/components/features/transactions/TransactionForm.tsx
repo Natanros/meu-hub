@@ -143,24 +143,24 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
     <Card className="dark:bg-gray-800 dark:border-gray-700 shadow-lg border-t-4 border-t-blue-500">
       <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-t-lg p-3 sm:p-4">
         <CardTitle className="dark:text-white flex items-center gap-2 text-sm sm:text-base">
-          💰 Adicionar Transação
-          <span className="hidden sm:inline text-xs bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-2 py-1 rounded-full font-medium">
+          💰 <span className="hidden xs:inline">Adicionar Transação</span><span className="xs:hidden">Nova</span>
+          <span className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-2 py-1 rounded-full font-medium ml-auto">
             NOVA
           </span>
         </CardTitle>
       </CardHeader>
       
       <CardContent className="p-3 sm:p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           {/* Tipo de Transação */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-gray-700 dark:text-gray-300">
                 Tipo *
               </label>
               <Select value={formData.type} onValueChange={(value) => handleInputChange('type', value)}>
-                <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                  <SelectValue placeholder="Selecione o tipo" />
+                <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white h-10 sm:h-11 text-sm">
+                  <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="income">💰 Receita</SelectItem>
@@ -170,7 +170,7 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-gray-700 dark:text-gray-300">
                 Categoria *
               </label>
               <Select 
@@ -178,8 +178,8 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
                 onValueChange={(value) => handleInputChange('category', value)}
                 disabled={!formData.type}
               >
-                <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                  <SelectValue placeholder={formData.type ? "Selecione a categoria" : "Escolha o tipo primeiro"} />
+                <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white h-10 sm:h-11 text-sm">
+                  <SelectValue placeholder={formData.type ? "Categoria" : "Tipo primeiro"} />
                 </SelectTrigger>
                 <SelectContent>
                   {(formData.type === 'income' ? categoriesIncome : categoriesExpense).map((category) => (
@@ -193,10 +193,10 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
           </div>
 
           {/* Valor, Parcelas e Data */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                Valor (R$) *
+              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-gray-700 dark:text-gray-300">
+                Valor *
               </label>
               <Input
                 type="number"
@@ -205,20 +205,20 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
                 placeholder="0,00"
                 value={formData.amount}
                 onChange={(e) => handleInputChange('amount', e.target.value)}
-                className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="dark:bg-gray-700 dark:border-gray-600 dark:text-white h-10 sm:h-11 text-sm"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-gray-700 dark:text-gray-300">
                 Parcelas
               </label>
               <Select value={formData.installments} onValueChange={(value) => handleInputChange('installments', value)}>
-                <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white h-10 sm:h-11 text-sm">
                   <SelectValue placeholder="1x" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">1x (À vista)</SelectItem>
+                  <SelectItem value="1">1x</SelectItem>
                   <SelectItem value="2">2x</SelectItem>
                   <SelectItem value="3">3x</SelectItem>
                   <SelectItem value="4">4x</SelectItem>
@@ -234,53 +234,53 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
               </Select>
               {parseInt(formData.installments) > 1 && formData.amount && (
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  💰 {formData.installments}x de R$ {(parseFloat(formData.amount) / parseInt(formData.installments)).toFixed(2)}
+                  {formData.installments}x R$ {(parseFloat(formData.amount) / parseInt(formData.installments)).toFixed(2)}
                 </p>
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+            <div className="col-span-2 sm:col-span-1">
+              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-gray-700 dark:text-gray-300">
                 Data *
               </label>
               <Input
                 type="date"
                 value={formData.date}
                 onChange={(e) => handleInputChange('date', e.target.value)}
-                className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="dark:bg-gray-700 dark:border-gray-600 dark:text-white h-10 sm:h-11 text-sm"
               />
             </div>
           </div>
 
           {/* Descrição */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+            <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-gray-700 dark:text-gray-300">
               Descrição
             </label>
             <Input
               type="text"
-              placeholder="Descrição opcional da transação"
+              placeholder="Descrição opcional"
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
-              className="dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="dark:bg-gray-700 dark:border-gray-600 dark:text-white h-10 sm:h-11 text-sm"
             />
           </div>
 
           {/* Meta (opcional) */}
           {metas.length > 0 && (
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                Vincular à Meta (opcional)
+              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-gray-700 dark:text-gray-300">
+                Meta (opcional)
               </label>
               <div className="flex gap-2">
                 <Select value={formData.metaId || undefined} onValueChange={(value) => handleInputChange('metaId', value || '')}>
-                  <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white flex-1">
-                    <SelectValue placeholder="Selecione uma meta (opcional)" />
+                  <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white flex-1 h-10 sm:h-11 text-sm">
+                    <SelectValue placeholder="Selecione uma meta" />
                   </SelectTrigger>
                   <SelectContent>
                     {metas.map((meta) => (
                       <SelectItem key={meta.id} value={meta.id}>
-                        🎯 {meta.nome} (R$ {meta.valor.toFixed(2)})
+                        🎯 {meta.nome}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -290,7 +290,7 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
                     type="button"
                     variant="outline"
                     onClick={() => handleInputChange('metaId', '')}
-                    className="px-3 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600"
+                    className="px-3 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600 h-10 sm:h-11 flex-shrink-0"
                   >
                     ✖️
                   </Button>
@@ -300,11 +300,11 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
           )}
 
           {/* Botões */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2 sm:pt-4">
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-green-500 hover:bg-green-600 text-white"
+              className="flex-1 bg-green-500 hover:bg-green-600 text-white h-10 sm:h-11 text-sm font-medium"
             >
               {isSubmitting ? (
                 <>
@@ -314,7 +314,7 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
               ) : (
                 <>
                   <span className="mr-2">💾</span>
-                  Adicionar Transação
+                  Adicionar
                 </>
               )}
             </Button>
@@ -323,7 +323,7 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
               type="button"
               variant="outline"
               onClick={resetForm}
-              className="dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600"
+              className="dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600 h-10 sm:h-11 text-sm"
             >
               🗑️ Limpar
             </Button>
@@ -331,8 +331,8 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
         </form>
 
         {/* Dicas */}
-        <div className="mt-6 p-3 bg-blue-50 dark:bg-gray-700 rounded-lg">
-          <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">
+        <div className="hidden sm:block mt-4 sm:mt-6 p-3 bg-blue-50 dark:bg-gray-700 rounded-lg">
+          <h4 className="text-xs sm:text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">
             💡 Dicas rápidas:
           </h4>
           <ul className="text-xs text-blue-700 dark:text-blue-300 space-y-1">

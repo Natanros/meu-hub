@@ -24,15 +24,15 @@ const SummaryCard = ({
   textColor: string;
 }) => (
   <Card
-    className={`bg-gradient-to-r ${gradient} ${textColor} border-0 shadow-lg`}
+    className={`bg-gradient-to-r ${gradient} ${textColor} border-0 shadow-lg hover:shadow-xl transition-shadow`}
   >
-    <CardContent className="p-4">
+    <CardContent className="p-4 sm:p-5">
       <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium opacity-90">{title}</p>
-          <p className="text-2xl font-bold">{value}</p>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs sm:text-sm font-medium opacity-90 mb-1">{title}</p>
+          <p className="text-xl sm:text-2xl md:text-3xl font-bold truncate">{value}</p>
         </div>
-        <div className="text-3xl">{icon}</div>
+        <div className="text-3xl sm:text-4xl ml-2 flex-shrink-0">{icon}</div>
       </div>
     </CardContent>
   </Card>
@@ -48,7 +48,7 @@ export function FinancialSummaryCards({
 }: FinancialSummaryCardsProps) {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         <LoadingSkeleton />
         <LoadingSkeleton />
         <LoadingSkeleton />
@@ -59,7 +59,7 @@ export function FinancialSummaryCards({
   const { saldo, totalReceitas, totalDespesas } = summary;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
       <SummaryCard
         title="Total Receitas"
         value={`R$ ${totalReceitas.toFixed(2)}`}
