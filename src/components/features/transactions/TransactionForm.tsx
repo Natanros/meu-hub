@@ -21,6 +21,99 @@ interface TransactionFormProps {
   showToast: (message: string, type: 'success' | 'error') => void
 }
 
+interface BudgetWarningModalProps {
+  isOpen: boolean
+  category: string
+  budgetAmount: number
+  currentSpent: number
+  newAmount: number
+  onConfirm: () => void
+  onCancel: () => void
+}
+
+interface TransactionData {
+  type: 'income' | 'expense'
+  category: string
+  amount: number
+  description: string
+  date: string
+  metaId?: string
+  installments: number
+  recurrence?: string
+}
+
+// Modal de confirmação quando excede orçamento
+function BudgetWarningModal({ isOpen, category, budgetAmount, currentSpent, newAmount, onConfirm, onCancel }: BudgetWarningModalProps) {
+  if (!isOpen) return null;
+
+  const totalAfter = currentSpent + newAmount;
+  const exceededAmount = totalAfter - budgetAmount;
+  const percentageUsed = Math.round((totalAfter / budgetAmount) * 100);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 space-y-4">
+        <div className="flex items-center gap-3">
+          <span className="text-4xl">⚠️</span>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+            Orçamento Excedido!
+          </h3>
+        </div>
+        
+        <div className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+          <p className="font-medium">
+            Esta transação vai <span className="text-red-600 dark:text-red-400 font-bold">ultrapassar</span> o orçamento de <span className="font-bold">{category}</span>.
+          </p>
+          
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 space-y-2">
+            <div className="flex justify-between">
+              <span>Orçamento do mês:</span>
+              <span className="font-semibold">R$ {budgetAmount.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Gasto atual:</span>
+              <span className="font-semibold">R$ {currentSpent.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Nova transação:</span>
+              <span className="font-semibold text-blue-600 dark:text-blue-400">+ R$ {newAmount.toFixed(2)}</span>
+            </div>
+            <div className="border-t border-red-300 dark:border-red-700 pt-2 mt-2"></div>
+            <div className="flex justify-between text-base">
+              <span className="font-bold">Total após:</span>
+              <span className="font-bold text-red-600 dark:text-red-400">R$ {totalAfter.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-base">
+              <span className="font-bold">Excedente:</span>
+              <span className="font-bold text-red-600 dark:text-red-400">R$ {exceededAmount.toFixed(2)} ({percentageUsed}%)</span>
+            </div>
+          </div>
+
+          <p className="text-center font-medium text-gray-900 dark:text-white pt-2">
+            Deseja adicionar mesmo assim?
+          </p>
+        </div>
+
+        <div className="flex gap-3 pt-2">
+          <Button
+            onClick={onCancel}
+            variant="outline"
+            className="flex-1 h-11"
+          >
+            ❌ Cancelar
+          </Button>
+          <Button
+            onClick={onConfirm}
+            className="flex-1 bg-red-600 hover:bg-red-700 text-white h-11"
+          >
+            ✅ Adicionar Mesmo Assim
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function TransactionForm({ onTransactionAdded, metas, showToast }: TransactionFormProps) {
   const [formData, setFormData] = useState({
     type: '',
@@ -32,6 +125,14 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
     installments: '1'
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showBudgetWarning, setShowBudgetWarning] = useState(false)
+  const [budgetWarningData, setBudgetWarningData] = useState<{
+    category: string;
+    budgetAmount: number;
+    currentSpent: number;
+    newAmount: number;
+  } | null>(null)
+  const [pendingTransactionData, setPendingTransactionData] = useState<TransactionData | null>(null)
   const isOnline = useOnlineStatus()
 
   const categoriesIncome = [
@@ -54,8 +155,6 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
       return
     }
 
-    setIsSubmitting(true)
-
     const transactionData = {
       type: formData.type as 'income' | 'expense',
       category: formData.category,
@@ -66,6 +165,70 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
       installments: parseInt(formData.installments) || 1,
       recurrence: parseInt(formData.installments) > 1 ? 'monthly' : undefined,
     };
+
+    // ✅ Verificar orçamento se for despesa e estiver online
+    if (transactionData.type === 'expense' && isOnline) {
+      try {
+        const [year, month] = formData.date.split('-').map(Number);
+        
+        // Buscar orçamento e transações do mês
+        const [budgetRes, transactionsRes] = await Promise.all([
+          fetch(`/api/budgets?month=${month}&year=${year}`),
+          fetch('/api/transactions')
+        ]);
+
+        if (budgetRes.ok && transactionsRes.ok) {
+          const budgets = await budgetRes.json();
+          const transactions = await transactionsRes.json();
+
+          // Verificar se existe orçamento para esta categoria
+          const categoryBudget = budgets.find((b: { category: string; month: number; year: number; amount: number }) => 
+            b.category === transactionData.category && 
+            b.month === month && 
+            b.year === year
+          );
+
+          if (categoryBudget) {
+            // Calcular gasto atual na categoria
+            const currentSpent = transactions
+              .filter((t: { type: string; category: string; date: string; amount: number }) => {
+                const transDate = new Date(t.date);
+                return t.type === 'expense' && 
+                       t.category === transactionData.category &&
+                       transDate.getMonth() + 1 === month &&
+                       transDate.getFullYear() === year;
+              })
+              .reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+
+            const totalAfter = currentSpent + transactionData.amount;
+
+            // Se vai exceder o orçamento, mostrar aviso
+            if (totalAfter > categoryBudget.amount) {
+              setBudgetWarningData({
+                category: transactionData.category,
+                budgetAmount: categoryBudget.amount,
+                currentSpent: currentSpent,
+                newAmount: transactionData.amount
+              });
+              setPendingTransactionData(transactionData);
+              setShowBudgetWarning(true);
+              return; // Para a execução aqui
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao verificar orçamento:', error);
+        // Continua mesmo se houver erro na verificação
+      }
+    }
+
+    // Se passou pela verificação ou não precisa verificar, processa normalmente
+    await processTransaction(transactionData);
+  };
+
+  // Função para processar a transação (com ou sem confirmação)
+  const processTransaction = async (transactionData: TransactionData) => {
+    setIsSubmitting(true);
 
     if (!isOnline) {
       try {
@@ -118,7 +281,25 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
     } finally {
       setIsSubmitting(false)
     }
-  }
+  };
+
+  // Confirmar transação mesmo com orçamento excedido
+  const handleConfirmWithBudgetExceeded = async () => {
+    setShowBudgetWarning(false);
+    if (pendingTransactionData) {
+      await processTransaction(pendingTransactionData);
+      setPendingTransactionData(null);
+      setBudgetWarningData(null);
+    }
+  };
+
+  // Cancelar transação
+  const handleCancelTransaction = () => {
+    setShowBudgetWarning(false);
+    setPendingTransactionData(null);
+    setBudgetWarningData(null);
+    setIsSubmitting(false);
+  };
 
   const resetForm = () => {
     setFormData({
@@ -140,7 +321,21 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
   }
 
   return (
-    <Card className="dark:bg-gray-800 dark:border-gray-700 shadow-lg border-t-4 border-t-blue-500">
+    <>
+      {/* Modal de Aviso de Orçamento */}
+      {showBudgetWarning && budgetWarningData && (
+        <BudgetWarningModal
+          isOpen={showBudgetWarning}
+          category={budgetWarningData.category}
+          budgetAmount={budgetWarningData.budgetAmount}
+          currentSpent={budgetWarningData.currentSpent}
+          newAmount={budgetWarningData.newAmount}
+          onConfirm={handleConfirmWithBudgetExceeded}
+          onCancel={handleCancelTransaction}
+        />
+      )}
+
+      <Card className="dark:bg-gray-800 dark:border-gray-700 shadow-lg border-t-4 border-t-blue-500">
       <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-t-lg p-3 sm:p-4">
         <CardTitle className="dark:text-white flex items-center gap-2 text-sm sm:text-base">
           💰 <span className="hidden xs:inline">Adicionar Transação</span><span className="xs:hidden">Nova</span>
@@ -343,5 +538,6 @@ export function TransactionForm({ onTransactionAdded, metas, showToast }: Transa
         </div>
       </CardContent>
     </Card>
+    </>
   )
 }
