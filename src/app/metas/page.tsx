@@ -60,13 +60,17 @@ export default function MetasPage() {
 
   // Calcular progresso de uma meta
   const calcularProgresso = (meta: Meta) => {
+    // ✅ Soma RECEITAS e DESPESAS vinculadas à meta
     const valorAcumulado = transactions
       .filter(t => t.metaId === meta.id)
-      .reduce((acc, t) => acc + (t.type === 'income' ? t.amount : -t.amount), 0)
+      .reduce((acc, t) => {
+        // Receitas somam positivamente, despesas também (pois ambas contribuem para a meta)
+        return acc + t.amount;
+      }, 0);
     
-    const percentual = Math.min(100, Math.round((valorAcumulado / meta.valor) * 100))
-    return { valorAcumulado, percentual }
-  }
+    const percentual = Math.min(100, Math.round((valorAcumulado / meta.valor) * 100));
+    return { valorAcumulado, percentual };
+  };
 
   // Criar ou atualizar meta
   const handleSubmit = async (e: React.FormEvent) => {

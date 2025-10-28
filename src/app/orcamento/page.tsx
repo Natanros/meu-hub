@@ -8,12 +8,28 @@ import { Loader2 } from 'lucide-react';
 import UserHeader from '@/components/layout/UserHeader';
 import ProtectedRoute from '@/components/features/auth/ProtectedRoute';
 
-// Extrai categorias únicas das transações
-const getUniqueCategories = (transactions: Transaction[]): string[] => {
-    const expenseCategories = transactions
-        .filter(t => t.type === 'expense')
-        .map(t => t.category);
-    return [...new Set(expenseCategories)].sort();
+// Lista completa de categorias de despesas (independente de ter transações)
+const getAllExpenseCategories = (): string[] => {
+  return [
+    'Alimentação',
+    'Moradia', 
+    'Transporte',
+    'Saúde',
+    'Educação',
+    'Lazer',
+    'Vestuário',
+    'Tecnologia',
+    'Mercado',
+    'Restaurante',
+    'Combustível',
+    'Farmácia',
+    'Shopping',
+    'Conta de Luz',
+    'Conta de Água',
+    'Internet',
+    'Telefone',
+    'Outros'
+  ].sort();
 };
 
 export default function OrcamentoPage() {
@@ -31,7 +47,7 @@ export default function OrcamentoPage() {
           if (!res.ok) throw new Error('Falha ao buscar transações');
           const data: Transaction[] = await res.json();
           setTransactions(data);
-          setCategories(getUniqueCategories(data));
+          setCategories(getAllExpenseCategories()); // ✅ Sempre mostra todas as categorias
         } catch (error) {
           console.error(error);
         } finally {
