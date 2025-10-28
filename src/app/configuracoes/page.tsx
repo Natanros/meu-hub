@@ -13,9 +13,15 @@ export default function ConfiguracoesPage() {
   const { data: session, update } = useSession()
   const { showToast } = useToast()
   const [isUpdating, setIsUpdating] = useState(false)
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
   const [formData, setFormData] = useState({
     name: session?.user?.name || '',
     email: session?.user?.email || ''
+  })
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
   })
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
@@ -42,6 +48,50 @@ export default function ConfiguracoesPage() {
       showToast('Erro ao atualizar perfil', 'error')
     } finally {
       setIsUpdating(false)
+    }
+  }
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Validações
+    if (passwordData.newPassword.length < 6) {
+      showToast('A nova senha deve ter no mínimo 6 caracteres', 'error')
+      return
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      showToast('As senhas não coincidem', 'error')
+      return
+    }
+
+    setIsChangingPassword(true)
+
+    try {
+      const response = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        showToast('Senha alterada com sucesso!', 'success')
+        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' })
+      } else {
+        showToast(data.error || 'Erro ao alterar senha', 'error')
+      }
+    } catch (error) {
+      console.error('Erro ao alterar senha:', error)
+      showToast('Erro ao alterar senha', 'error')
+    } finally {
+      setIsChangingPassword(false)
     }
   }
 
@@ -131,6 +181,72 @@ export default function ConfiguracoesPage() {
                 </form>
               </CardContent>
             </Card>
+
+            {/* Alteração de Senha */}
+            {!session?.user?.image && (
+              <Card className="bg-white dark:bg-gray-800 border-0 shadow-lg">
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-900 dark:text-white">
+                    🔐 Alterar Senha
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 sm:p-6 pt-0">
+                  <form onSubmit={handleChangePassword} className="space-y-3 sm:space-y-4">
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                        Senha Atual
+                      </label>
+                      <Input
+                        type="password"
+                        value={passwordData.currentPassword}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
+                        className="w-full h-10 sm:h-11 text-sm"
+                        placeholder="Digite sua senha atual"
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                        Nova Senha
+                      </label>
+                      <Input
+                        type="password"
+                        value={passwordData.newPassword}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+                        className="w-full h-10 sm:h-11 text-sm"
+                        placeholder="Mínimo 6 caracteres"
+                        required
+                        minLength={6}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                        Confirmar Nova Senha
+                      </label>
+                      <Input
+                        type="password"
+                        value={passwordData.confirmPassword}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                        className="w-full h-10 sm:h-11 text-sm"
+                        placeholder="Digite novamente"
+                        required
+                        minLength={6}
+                      />
+                    </div>
+
+                    <Button 
+                      type="submit" 
+                      disabled={isChangingPassword}
+                      className="w-full bg-purple-600 hover:bg-purple-700 h-10 sm:h-11 text-sm"
+                    >
+                      {isChangingPassword ? 'Alterando...' : '🔑 Alterar Senha'}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Informações da Conta */}
             <Card className="bg-white dark:bg-gray-800 border-0 shadow-lg">

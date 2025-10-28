@@ -134,3 +134,13 @@ model Category {
   @@unique([userId, name, type]) // Garante que não tenha categorias duplicadas por usuário
   @@map("categories")
 }
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@map("password_reset_tokens")
+}
