@@ -1,6 +1,6 @@
 # 💰 Meu Hub - Gestão Financeira Pessoal
 
-Sistema completo de gestão financeira pessoal com interface moderna, análises inteligentes e relatórios detalhados.
+Sistema completo de gestão financeira pessoal com interface moderna e relatórios detalhados.
 
 ## 🎯 Objetivo
 
@@ -18,10 +18,10 @@ Proporcionar uma plataforma integrada para controle financeiro pessoal, permitin
 ### 💸 **Centro Financeiro**
 
 - Cadastro de transações (receitas e despesas)
-- Entrada por voz com processamento inteligente
+- Entrada por voz com processamento de texto
 - Transações parceladas e recorrentes
-- Categorização automática
-- Exportação de dados (CSV, JSON)
+- Categorização por tipo
+- Exportação de dados (CSV, JSON, PDF)
 - Relatórios financeiros detalhados
 - Dashboard de pagamentos futuros
 
@@ -29,14 +29,14 @@ Proporcionar uma plataforma integrada para controle financeiro pessoal, permitin
 
 - Definição de limites por categoria
 - Acompanhamento em tempo real
-- Alertas de gastos excessivos
+- Alertas de gastos
 - Visualização de progresso
 
 ### 🏁 **Metas Financeiras**
 
 - Criação de objetivos financeiros
 - Vinculação de transações às metas
-- Cálculo automático de progresso
+- Acompanhamento de progresso
 - Estatísticas de metas atingidas
 
 ### 📈 **Analytics & Relatórios**
@@ -44,8 +44,8 @@ Proporcionar uma plataforma integrada para controle financeiro pessoal, permitin
 - Gráficos interativos (barras, linha, pizza)
 - Análises por período (mensal, semanal, anual)
 - Relatórios personalizados
-- Sistema de alertas inteligentes
-- Backup e exportação de dados
+- Sistema de alertas e notificações
+- Backup e restauração de dados
 
 ### ⚙️ **Configurações**
 

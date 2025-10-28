@@ -48,12 +48,12 @@ export default function FinanceiroModerno() {
               <Card className="bg-white dark:bg-gray-800 border-0 shadow-lg">
                 <CardHeader className="p-4 sm:p-6">
                   <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-900 dark:text-white">
-                    🎤 <span className="hidden sm:inline">Entrada por Voz (IA)</span><span className="sm:hidden">Voz (IA)</span>
+                    🎤 <span className="hidden sm:inline">Entrada por Voz</span><span className="sm:hidden">Voz</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 sm:p-6 pt-0">
                   <VoiceTextInput 
-                    onTransactionAdded={() => handleTransactionChange('Transação via IA adicionada!')} 
+                    onTransactionAdded={() => handleTransactionChange('Transação via voz adicionada!')} 
                     metas={metas}
                     showToast={showToast}
                   />

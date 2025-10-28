@@ -34,8 +34,6 @@ interface SystemSettings {
   language: 'pt-BR' | 'en-US';
   notifications: {
     enabled: boolean;
-    frequency: 'immediate' | 'daily' | 'weekly';
-    email: boolean;
     browser: boolean;
   };
   privacy: {
@@ -45,15 +43,7 @@ interface SystemSettings {
   };
   features: {
     voiceInput: boolean;
-    aiInsights: boolean;
-    autoBackup: boolean;
     expenseTracking: boolean;
-  };
-  backup: {
-    autoBackup: boolean;
-    frequency: 'daily' | 'weekly' | 'monthly';
-    retentionDays: number;
-    cloudStorage: boolean;
   };
 }
 
@@ -74,8 +64,6 @@ const BackupManager: React.FC<BackupManagerProps> = ({
     language: 'pt-BR',
     notifications: {
       enabled: true,
-      frequency: 'daily',
-      email: false,
       browser: true
     },
     privacy: {
@@ -85,15 +73,7 @@ const BackupManager: React.FC<BackupManagerProps> = ({
     },
     features: {
       voiceInput: true,
-      aiInsights: true,
-      autoBackup: true,
       expenseTracking: true
-    },
-    backup: {
-      autoBackup: true,
-      frequency: 'weekly',
-      retentionDays: 30,
-      cloudStorage: false
     }
   });
 
@@ -278,20 +258,12 @@ const BackupManager: React.FC<BackupManagerProps> = ({
           
           <div className="space-y-4">
             <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Último Backup:
                 </span>
                 <span className="text-sm text-gray-600 dark:text-gray-400">
                   {stats.lastBackup}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Backup Automático:
-                </span>
-                <span className={`text-sm ${settings.backup.autoBackup ? 'text-green-600' : 'text-red-600'}`}>
-                  {settings.backup.autoBackup ? 'Ativo' : 'Inativo'}
                 </span>
               </div>
             </div>
@@ -323,47 +295,6 @@ const BackupManager: React.FC<BackupManagerProps> = ({
                   onChange={restoreBackup}
                   className="w-full"
                 />
-              </div>
-            </div>
-
-            {/* Configurações de Backup */}
-            <div className="border-t pt-4">
-              <h4 className="font-medium mb-3 text-gray-800 dark:text-white">
-                ⚙️ Configurações de Backup
-              </h4>
-              <div className="space-y-3">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={settings.backup.autoBackup}
-                    onChange={(e) => setSettings({
-                      ...settings,
-                      backup: { ...settings.backup, autoBackup: e.target.checked }
-                    })}
-                    className="rounded"
-                  />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">
-                    Backup automático
-                  </span>
-                </label>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-                    Frequência
-                  </label>
-                  <select
-                    value={settings.backup.frequency}
-                    onChange={(e) => setSettings({
-                      ...settings,
-                      backup: { ...settings.backup, frequency: e.target.value as 'daily' | 'weekly' | 'monthly' }
-                    })}
-                    className="w-full p-2 text-sm border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  >
-                    <option value="daily">Diário</option>
-                    <option value="weekly">Semanal</option>
-                    <option value="monthly">Mensal</option>
-                  </select>
-                </div>
               </div>
             </div>
           </div>
@@ -481,15 +412,15 @@ const BackupManager: React.FC<BackupManagerProps> = ({
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={settings.features.aiInsights}
+                    checked={settings.features.expenseTracking}
                     onChange={(e) => setSettings({
                       ...settings,
-                      features: { ...settings.features, aiInsights: e.target.checked }
+                      features: { ...settings.features, expenseTracking: e.target.checked }
                     })}
                     className="rounded"
                   />
                   <span className="text-sm text-gray-700 dark:text-gray-300">
-                    Insights de IA
+                    Rastreamento de despesas
                   </span>
                 </label>
               </div>

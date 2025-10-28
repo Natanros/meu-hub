@@ -1,33 +1,13 @@
 /**
- * 🔔 Advanced Alert System
- * Sistema inteligente de alertas e notificações configuráveis
+ * 🔔 Sistema de Alertas e Análises
+ * Análises básicas de padrões financeiros e notificações
  */
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Transaction } from '@/types/transaction';
 import { Meta } from '@/types/meta';
-
-export interface AlertRule {
-  id: string;
-  name: string;
-  type: 'budget' | 'goal' | 'spending' | 'pattern' | 'income';
-  condition: {
-    field: string;
-    operator: 'gt' | 'lt' | 'eq' | 'gte' | 'lte' | 'contains';
-    value: number | string;
-  };
-  action: {
-    type: 'notification' | 'email' | 'webhook';
-    message: string;
-    severity: 'low' | 'medium' | 'high' | 'critical';
-  };
-  isActive: boolean;
-  frequency: 'immediate' | 'daily' | 'weekly' | 'monthly';
-  lastTriggered?: Date;
-}
 
 export interface SmartAlert {
   id: string;
@@ -55,27 +35,9 @@ interface AlertsManagerProps {
 
 const AlertsManager: React.FC<AlertsManagerProps> = ({ transactions, metas }) => {
   const [alerts, setAlerts] = useState<SmartAlert[]>([]);
-  const [rules, setRules] = useState<AlertRule[]>([]);
-  const [showRulesConfig, setShowRulesConfig] = useState(false);
-  const [newRule, setNewRule] = useState<Partial<AlertRule>>({
-    name: '',
-    type: 'budget',
-    condition: {
-      field: 'amount',
-      operator: 'gt',
-      value: 1000
-    },
-    action: {
-      type: 'notification',
-      message: '',
-      severity: 'medium'
-    },
-    isActive: true,
-    frequency: 'immediate'
-  });
 
   /**
-   * 🧠 Analisador inteligente de padrões
+   * 🧠 Analisador de padrões financeiros
    */
   const analyzePatterns = () => {
     const newAlerts: SmartAlert[] = [];
@@ -319,33 +281,6 @@ const AlertsManager: React.FC<AlertsManagerProps> = ({ transactions, metas }) =>
     setAlerts(prev => prev.filter(alert => alert.id !== alertId));
   };
 
-  /**
-   * 🔔 Adicionar nova regra
-   */
-  const addRule = () => {
-    if (newRule.name && newRule.action?.message) {
-      const rule: AlertRule = {
-        id: `rule-${Date.now()}`,
-        name: newRule.name,
-        type: newRule.type || 'budget',
-        condition: newRule.condition || { field: 'amount', operator: 'gt', value: 1000 },
-        action: newRule.action || { type: 'notification', message: '', severity: 'medium' },
-        isActive: newRule.isActive ?? true,
-        frequency: newRule.frequency || 'immediate'
-      };
-      
-      setRules(prev => [...prev, rule]);
-      setNewRule({
-        name: '',
-        type: 'budget',
-        condition: { field: 'amount', operator: 'gt', value: 1000 },
-        action: { type: 'notification', message: '', severity: 'medium' },
-        isActive: true,
-        frequency: 'immediate'
-      });
-    }
-  };
-
   const unreadAlerts = alerts.filter(a => !a.isRead);
   const criticalAlerts = alerts.filter(a => a.severity === 'critical');
 
@@ -355,30 +290,21 @@ const AlertsManager: React.FC<AlertsManagerProps> = ({ transactions, metas }) =>
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-            🔔 Sistema de Alertas Inteligentes
+            🔔 Sistema de Alertas e Análises
           </h2>
           <p className="text-gray-600 dark:text-gray-300">
-            Monitoramento automático e notificações personalizadas
+            Monitoramento de padrões financeiros
           </p>
         </div>
-        <div className="flex space-x-2">
-          <Button
-            variant="outline"
-            onClick={() => setShowRulesConfig(!showRulesConfig)}
-            size="sm"
-          >
-            ⚙️ Configurar Regras
-          </Button>
-          {unreadAlerts.length > 0 && (
-            <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-              {unreadAlerts.length} novo{unreadAlerts.length !== 1 ? 's' : ''}
-            </div>
-          )}
-        </div>
+        {unreadAlerts.length > 0 && (
+          <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+            {unreadAlerts.length} novo{unreadAlerts.length !== 1 ? 's' : ''}
+          </div>
+        )}
       </div>
 
       {/* Estatísticas Rápidas */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <Card className="p-4">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
@@ -414,94 +340,7 @@ const AlertsManager: React.FC<AlertsManagerProps> = ({ transactions, metas }) =>
             </div>
           </div>
         </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-              <span className="text-green-600 text-sm">⚙️</span>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Regras</p>
-              <p className="text-lg font-bold text-green-600">{rules.filter(r => r.isActive).length}</p>
-            </div>
-          </div>
-        </Card>
       </div>
-
-      {/* Configuração de Regras */}
-      {showRulesConfig && (
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
-            ⚙️ Configurar Nova Regra de Alerta
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                Nome da Regra
-              </label>
-              <Input
-                value={newRule.name || ''}
-                onChange={(e) => setNewRule({ ...newRule, name: e.target.value })}
-                placeholder="Ex: Gastos altos em alimentação"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                Tipo
-              </label>
-              <select
-                value={newRule.type || 'budget'}
-                onChange={(e) => setNewRule({ ...newRule, type: e.target.value as 'budget' | 'goal' | 'spending' | 'pattern' | 'income' })}
-                className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              >
-                <option value="budget">💰 Orçamento</option>
-                <option value="goal">🎯 Meta</option>
-                <option value="spending">💸 Gastos</option>
-                <option value="pattern">📊 Padrão</option>
-                <option value="income">💵 Receita</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                Valor Limite
-              </label>
-              <Input
-                type="number"
-                value={newRule.condition?.value || 1000}
-                onChange={(e) => setNewRule({
-                  ...newRule,
-                  condition: { 
-                    ...newRule.condition!, 
-                    value: Number(e.target.value) 
-                  }
-                })}
-                placeholder="1000"
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                Mensagem do Alerta
-              </label>
-              <Input
-                value={newRule.action?.message || ''}
-                onChange={(e) => setNewRule({
-                  ...newRule,
-                  action: { 
-                    ...newRule.action!, 
-                    message: e.target.value 
-                  }
-                })}
-                placeholder="Gasto alto detectado na categoria alimentação"
-              />
-            </div>
-            <div className="flex items-end">
-              <Button onClick={addRule} className="w-full">
-                ➕ Adicionar Regra
-              </Button>
-            </div>
-          </div>
-        </Card>
-      )}
 
       {/* Lista de Alertas */}
       <div className="space-y-4">
