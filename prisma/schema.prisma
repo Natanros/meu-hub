@@ -24,6 +24,7 @@ model User {
   transactions Transaction[]
   metas        Meta[]
   budgets      Budget[]
+  categories   Category[]
 
   @@map("users")
 }
@@ -116,4 +117,20 @@ model Meta {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  type      String // 'income' ou 'expense'
+  isDefault Boolean  @default(false) // Categorias padrão não podem ser excluídas
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamento com usuário
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name, type]) // Garante que não tenha categorias duplicadas por usuário
+  @@map("categories")
 }

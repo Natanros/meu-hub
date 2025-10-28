@@ -88,6 +88,7 @@ const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({ children }) => {
     { href: '/financeiro', icon: '💰', label: 'Financeiro' },
     { href: '/orcamento', icon: '🎯', label: 'Orçamento' },
     { href: '/metas', icon: '🏁', label: 'Metas' },
+    { href: '/categorias', icon: '🏷️', label: 'Categorias' },
     { href: '/analytics', icon: '📊', label: 'Analytics' },
     { href: '/configuracoes', icon: '⚙️', label: 'Configurações' },
   ];
