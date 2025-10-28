@@ -65,44 +65,44 @@ export default function AnalyticsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-2 sm:p-4">
-        <div className="max-w-7xl mx-auto space-y-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-3 sm:p-4 md:p-6">
+        <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
           
           <UserHeader />
           
-          <div className="text-center py-8 sm:py-12 bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-700 dark:to-blue-700 text-white rounded-lg shadow-xl">
-            <h1 className="text-3xl sm:text-5xl font-bold mb-3">📊 Analytics & Relatórios</h1>
-            <p className="text-lg sm:text-xl text-indigo-100 dark:text-indigo-200">
-              Sistema avançado de análises, relatórios e alertas inteligentes
+          <div className="text-center py-6 sm:py-10 md:py-12 px-4 bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-700 dark:to-blue-700 text-white rounded-xl shadow-xl">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-3">📊 Analytics & Relatórios</h1>
+            <p className="text-sm sm:text-lg md:text-xl text-indigo-100 dark:text-indigo-200">
+              Análises, relatórios e alertas inteligentes
             </p>
           </div>
 
         {/* Estatísticas Rápidas */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                Total Transações
+            <CardHeader className="pb-2 p-3 sm:p-4">
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">
+                Transações
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gray-800 dark:text-white">
+            <CardContent className="p-3 sm:p-4 pt-0">
+              <div className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">
                 {transactions.length}
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Registros no sistema
+                Total
               </p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <CardHeader className="pb-2 p-3 sm:p-4">
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">
                 Receitas (30d)
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">
+            <CardContent className="p-3 sm:p-4 pt-0">
+              <div className="text-xl sm:text-2xl font-bold text-green-600 truncate">
                 R$ {transactions
                   .filter(t => {
                     const transDate = new Date(t.date)
@@ -114,19 +114,19 @@ export default function AnalyticsPage() {
                   .toFixed(2)}
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Últimos 30 dias
+                30 dias
               </p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <CardHeader className="pb-2 p-3 sm:p-4">
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">
                 Despesas (30d)
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-red-600">
+            <CardContent className="p-3 sm:p-4 pt-0">
+              <div className="text-xl sm:text-2xl font-bold text-red-600 truncate">
                 R$ {transactions
                   .filter(t => {
                     const transDate = new Date(t.date)
@@ -138,54 +138,54 @@ export default function AnalyticsPage() {
                   .toFixed(2)}
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Últimos 30 dias
+                30 dias
               </p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                Metas Ativas
+            <CardHeader className="pb-2 p-3 sm:p-4">
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">
+                Metas
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">
+            <CardContent className="p-3 sm:p-4 pt-0">
+              <div className="text-xl sm:text-2xl font-bold text-blue-600">
                 {metas.length}
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Objetivos cadastrados
+                Ativas
               </p>
             </CardContent>
           </Card>
         </div>
 
         {/* Tabs principais */}
-        <Tabs defaultValue="reports" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="reports" className="flex items-center space-x-2">
+        <Tabs defaultValue="reports" className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-3 h-auto">
+            <TabsTrigger value="reports" className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm py-2">
               <span>📄</span>
-              <span>Relatórios</span>
+              <span className="hidden xs:inline">Relatórios</span>
             </TabsTrigger>
-            <TabsTrigger value="alerts" className="flex items-center space-x-2">
+            <TabsTrigger value="alerts" className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm py-2">
               <span>🔔</span>
-              <span>Alertas</span>
+              <span className="hidden xs:inline">Alertas</span>
             </TabsTrigger>
-            <TabsTrigger value="backup" className="flex items-center space-x-2">
+            <TabsTrigger value="backup" className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm py-2">
               <span>💾</span>
-              <span>Backup</span>
+              <span className="hidden xs:inline">Backup</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="reports" className="space-y-6">
+          <TabsContent value="reports" className="space-y-4 sm:space-y-6">
             <ReportsManager transactions={transactions} metas={metas} />
           </TabsContent>
 
-          <TabsContent value="alerts" className="space-y-6">
+          <TabsContent value="alerts" className="space-y-4 sm:space-y-6">
             <AlertsManager transactions={transactions} metas={metas} />
           </TabsContent>
 
-          <TabsContent value="backup" className="space-y-6">
+          <TabsContent value="backup" className="space-y-4 sm:space-y-6">
             <BackupManager transactions={transactions} metas={metas} />
           </TabsContent>
         </Tabs>

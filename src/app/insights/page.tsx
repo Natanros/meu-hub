@@ -71,31 +71,31 @@ export default function IAPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-2 sm:p-4">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-3 sm:p-4 md:p-6">
         <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
         
         <UserHeader />
         
         {/* Header Principal */}
-        <div className="text-center py-6 sm:py-8 bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-700 dark:to-indigo-700 text-white rounded-lg shadow-lg">
-          <h1 className="text-2xl sm:text-4xl font-bold mb-2">💡 Insights & Assistente</h1>
-          <p className="text-sm sm:text-base text-purple-100 dark:text-purple-200">Análises inteligentes e assistente virtual</p>
+        <div className="text-center py-6 sm:py-8 md:py-10 px-4 bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-700 dark:to-indigo-700 text-white rounded-xl shadow-lg">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">💡 Insights & Assistente</h1>
+          <p className="text-xs sm:text-sm md:text-base text-purple-100 dark:text-purple-200">Análises inteligentes e assistente virtual</p>
         </div>
 
         {/* Cards de Resumo Financeiro para IA */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
           {/* Saldo para IA */}
           <Card className="bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg">
             <CardHeader className="pb-2 p-3 sm:p-4">
               <CardTitle className="text-xs sm:text-sm font-medium text-green-100">Saldo Atual</CardTitle>
             </CardHeader>
-            <CardContent className="p-3 sm:p-4">
+            <CardContent className="p-3 sm:p-4 pt-0">
               <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-lg sm:text-2xl font-bold">R$ {saldo.toFixed(2)}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-lg sm:text-xl md:text-2xl font-bold truncate">R$ {saldo.toFixed(2)}</div>
                   <p className="text-green-100 text-xs">Para análise da IA</p>
                 </div>
-                <div className="text-xl sm:text-3xl">💰</div>
+                <div className="text-2xl sm:text-3xl ml-2 flex-shrink-0">💰</div>
               </div>
             </CardContent>
           </Card>
@@ -105,13 +105,13 @@ export default function IAPage() {
             <CardHeader className="pb-2 p-3 sm:p-4">
               <CardTitle className="text-xs sm:text-sm font-medium text-blue-100">Receitas</CardTitle>
             </CardHeader>
-            <CardContent className="p-3 sm:p-4">
+            <CardContent className="p-3 sm:p-4 pt-0">
               <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-lg sm:text-2xl font-bold">R$ {totalReceitas.toFixed(2)}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-lg sm:text-xl md:text-2xl font-bold truncate">R$ {totalReceitas.toFixed(2)}</div>
                   <p className="text-blue-100 text-xs">{Array.isArray(transactions) ? transactions.filter(t => t.type === 'income').length : 0} entradas</p>
                 </div>
-                <div className="text-xl sm:text-3xl">📈</div>
+                <div className="text-2xl sm:text-3xl ml-2 flex-shrink-0">📈</div>
               </div>
             </CardContent>
           </Card>
@@ -121,13 +121,13 @@ export default function IAPage() {
             <CardHeader className="pb-2 p-3 sm:p-4">
               <CardTitle className="text-xs sm:text-sm font-medium text-red-100">Despesas</CardTitle>
             </CardHeader>
-            <CardContent className="p-3 sm:p-4">
+            <CardContent className="p-3 sm:p-4 pt-0">
               <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-lg sm:text-2xl font-bold">R$ {totalDespesas.toFixed(2)}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-lg sm:text-xl md:text-2xl font-bold truncate">R$ {totalDespesas.toFixed(2)}</div>
                   <p className="text-red-100 text-xs">{Array.isArray(transactions) ? transactions.filter(t => t.type === 'expense').length : 0} saídas</p>
                 </div>
-                <div className="text-xl sm:text-3xl">📉</div>
+                <div className="text-2xl sm:text-3xl ml-2 flex-shrink-0">📉</div>
               </div>
             </CardContent>
           </Card>
