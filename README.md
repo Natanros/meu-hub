@@ -13,7 +13,7 @@ Proporcionar uma plataforma integrada para controle financeiro pessoal, permitin
 - Visão geral das finanças em tempo real
 - Cartões de resumo com saldo, receitas e despesas
 - Transações recentes
-- Insights financeiros automáticos
+- Acesso rápido às principais funcionalidades
 
 ### 💸 **Centro Financeiro**
 
@@ -46,14 +46,6 @@ Proporcionar uma plataforma integrada para controle financeiro pessoal, permitin
 - Relatórios personalizados
 - Sistema de alertas inteligentes
 - Backup e exportação de dados
-
-### 💡 **Insights & Assistente**
-
-- Análise automática de padrões financeiros
-- Chat assistente para consultas
-- Recomendações personalizadas
-- Notificações inteligentes
-- Dashboard analítico avançado
 
 ### ⚙️ **Configurações**
 

@@ -10,7 +10,6 @@ import { useFinancialData } from '@/hooks/useFinancialData'
 import { FinancialSummaryCards } from '@/components/features/financial/FinancialSummaryCards'
 import { TransactionsList } from '@/components/features/transactions/TransactionsList'
 import { useToast } from '@/hooks/useToast'
-import { InsightsDashboard } from '@/components/features/analytics/InsightsDashboard'
 
 export default function Home() {
   const [currentTime, setCurrentTime] = useState<string>('')
@@ -61,9 +60,8 @@ export default function Home() {
           <FinancialSummaryCards summary={summary} loading={loading} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-            {/* Coluna Esquerda: Insights e Transações */}
+            {/* Coluna Esquerda: Transações */}
             <div className="lg:col-span-2 space-y-4 sm:space-y-6">
-              <InsightsDashboard />
               <Card className="shadow-xl">
                 <CardHeader className="p-4 sm:p-6">
                   <CardTitle className="flex items-center justify-between text-base sm:text-lg">
@@ -99,9 +97,6 @@ export default function Home() {
                   </Link>
                   <Link href="/analytics">
                     <Button variant="outline" className="w-full h-10 sm:h-11 text-sm">📊 Ver Relatórios</Button>
-                  </Link>
-                  <Link href="/insights">
-                    <Button variant="outline" className="w-full h-10 sm:h-11 text-sm">💡 Insights & Assistente</Button>
                   </Link>
                 </CardContent>
               </Card>
